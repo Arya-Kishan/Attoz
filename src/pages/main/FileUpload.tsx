@@ -1,13 +1,13 @@
-import React, { useState } from "react"
 import axios from "axios"
-import { Upload, Video, ImageIcon } from "lucide-react"
+import { serverTimestamp } from "firebase/firestore"
+import { ImageIcon, Upload, Video } from "lucide-react"
+import { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { auth } from "../../../firebase"
+import CustomButton from "../../components/ui/CustomButton"
 import { firestoreService } from "../../services/FireStoreService"
 import { useAppSelector } from "../../store/storeHooks"
-import { useNavigate } from "react-router-dom"
 import type { PostType } from "../../types/postType"
-import { serverTimestamp } from "firebase/firestore"
-import CustomButton from "../../components/ui/CustomButton"
 
 const CLOUD_NAME = "dltwhnblh"
 const UPLOAD_PRESET = "AttozApp"
@@ -62,7 +62,7 @@ export default function VideoUploadPage() {
         views: [],
         share: [],
         createdAt:serverTimestamp,
-        user: { avatar: loggedInUser.avatar, name: loggedInUser.name, uid: user.uid },
+        user: { avatar: loggedInUser!.avatar, name: loggedInUser!.name, uid: user.uid },
       };
 
       await firestoreService.addDocument("posts", mediaData)

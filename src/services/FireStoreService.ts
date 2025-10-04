@@ -1,22 +1,21 @@
 // src/services/firestoreService.ts
+import type { User as FirebaseUser } from "firebase/auth";
+import type { DocumentData } from "firebase/firestore";
 import {
+    arrayRemove,
+    arrayUnion,
     collection,
+    deleteDoc,
     doc,
     getDoc,
     getDocs,
-    setDoc,
-    addDoc,
-    updateDoc,
-    deleteDoc,
     query,
-    where,
     serverTimestamp,
-    arrayRemove,
-    arrayUnion,
-} from "firebase/firestore"
-import type { DocumentData } from "firebase/firestore"
-import { db, auth } from "../../firebase"
-import type { User as FirebaseUser } from "firebase/auth"
+    setDoc,
+    updateDoc,
+    where
+} from "firebase/firestore";
+import { auth, db } from "../../firebase";
 
 type FirestoreResponse<T = any> = {
     success: boolean;

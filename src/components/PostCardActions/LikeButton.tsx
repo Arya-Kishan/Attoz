@@ -1,11 +1,9 @@
-import React, { useState, type FC } from 'react'
-import { FaHeart } from 'react-icons/fa'
-import { FaRegHeart } from "react-icons/fa"
-import type { LikedType, PostType } from '../../types/postType';
+import { useState, type FC } from 'react';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import { firestoreService } from '../../services/FireStoreService';
 import { showToast } from '../../services/Helper';
 import { useAppSelector } from '../../store/storeHooks';
-import { arrayUnion } from 'firebase/firestore';
+import type { LikedType, PostType } from '../../types/postType';
 
 interface LikeButtonProps {
   postDetail: PostType
@@ -15,9 +13,9 @@ const LikeButton: FC<LikeButtonProps> = ({ postDetail }) => {
   const { loggedInUser } = useAppSelector(store => store.user);
   const { docId: postId, likes: postLikedArr } = postDetail!;
   const [totalLikes, setTotalLikes] = useState(postLikedArr);
-  const [isLiked, setIsLiked] = useState(postLikedArr.includes(loggedInUser.uid));
+  const [isLiked, setIsLiked] = useState(postLikedArr.includes(loggedInUser!.uid));
 
-  console.log("sdsdf", new Set([...postLikedArr, loggedInUser.uid]))
+  console.log("sdsdf", new Set([...postLikedArr, loggedInUser!.uid]))
 
   const handleLike = async () => {
     try {
@@ -25,13 +23,13 @@ const LikeButton: FC<LikeButtonProps> = ({ postDetail }) => {
       setIsLiked(true);
       setTotalLikes(totalLikes + 1);
       const likeData: LikedType = {
-        avatar: loggedInUser.avatar,
-        name: loggedInUser.name,
-        uid: loggedInUser.uid,
+        avatar: loggedInUser!.avatar,
+        name: loggedInUser!.name,
+        uid: loggedInUser!.uid,
         postId: postId!,
       }
       await firestoreService.addDocument("likes", likeData);
-      const updateUserLikes = await firestoreService.updateDocument("posts", postId!, { likes: [...postLikedArr, loggedInUser.uid] });
+      const updateUserLikes = await firestoreService.updateDocument("posts", postId!, { likes: [...postLikedArr, loggedInUser!.uid] });
       if (!updateUserLikes) {
         setIsLiked(false);
         setTotalLikes(totalLikes - 1);
@@ -50,8 +48,8 @@ const LikeButton: FC<LikeButtonProps> = ({ postDetail }) => {
 
     setIsLiked(false);
     setTotalLikes(totalLikes - 1);
-    await firestoreService.deleteByField("likes", "uid", loggedInUser.uid);
-    const { success, message } = await firestoreService.updateArrayField("posts", postId!, "likes", loggedInUser.uid, "remove");
+    await firestoreService.deleteByField("likes", "uid", loggedInUser!.uid);
+    const { success, message } = await firestoreService.updateArrayField("posts", postId!, "likes", loggedInUser!.uid, "remove");
     if (!success) {
       setIsLiked(true);
       setTotalLikes(totalLikes + 1);

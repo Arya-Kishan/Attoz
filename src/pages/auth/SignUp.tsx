@@ -23,8 +23,8 @@ function Signup() {
 
     const userData: UserType = {
       uid: uid,
-      email: email,
-      name: name,
+      email: email!,
+      name: name!,
       bio: "Looks Good, Hope For The Best",
       avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
     }

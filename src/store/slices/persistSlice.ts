@@ -2,18 +2,18 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 
 interface PersistState {
-    persistUid: String | null,
+    persistUid: string,
 }
 
 const initialState: PersistState = {
-    persistUid: null,
+    persistUid: "",
 }
 
 const persistSlice = createSlice({
     name: 'persist',
     initialState,
     reducers: {
-        setPersistUid: (state, action: PayloadAction<String | null>) => {
+        setPersistUid: (state, action: PayloadAction<string>) => {
             state.persistUid = action.payload
         }
     },

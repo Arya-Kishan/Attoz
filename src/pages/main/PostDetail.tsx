@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { FaEye, FaHeart, FaRegComment, FaShare } from "react-icons/fa";
+import { FaEye, FaRegComment, FaShare } from "react-icons/fa";
 import { useParams } from "react-router-dom";
-import { firestoreService } from "../../services/FireStoreService";
-import type { PostType } from "../../types/postType";
 import { ClipLoader } from "react-spinners";
-import { showToast } from "../../services/Helper";
 import LikeButton from "../../components/PostCardActions/LikeButton";
+import { firestoreService } from "../../services/FireStoreService";
+import { showToast } from "../../services/Helper";
+import type { PostType } from "../../types/postType";
 
 const recommendations = [
     { id: 1, title: "Recommended Video 1", thumbnail: "https://via.placeholder.com/200x120" },

@@ -1,23 +1,23 @@
 import { signOut } from "firebase/auth";
-import { Bell, Search, Upload, LogOut } from "lucide-react"
-import { useNavigate } from "react-router-dom"
+import { Bell, LogOut, Search, Upload } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
-import { useAppDispatch, useAppSelector } from "../store/storeHooks";
-import { setLoggedInUser } from "../store/slices/userSlice";
 import { setPersistUid } from "../store/slices/persistSlice";
+import { setLoggedInUser } from "../store/slices/userSlice";
+import { useAppDispatch, useAppSelector } from "../store/storeHooks";
 
 const Navbar = () => {
     const navigation = useNavigate();
     const dispatch = useAppDispatch();
     const {loggedInUser} = useAppSelector(store=>store.user);
-    const {avatar,name} = loggedInUser;
+    const {avatar,name} = loggedInUser!;
 
     const handleLogout = async () => {
         try {
             await signOut(auth)
             console.log("User logged out successfully")
             dispatch(setLoggedInUser(null));
-            dispatch(setPersistUid(null));
+            dispatch(setPersistUid(""));
             navigation("/login");
             // Redirect to login page if needed
         } catch (error) {
