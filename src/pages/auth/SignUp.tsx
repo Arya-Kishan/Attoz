@@ -1,41 +1,19 @@
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
+import { createUserWithEmailAndPassword } from "firebase/auth"
 import { useState } from "react"
 import { FcGoogle } from "react-icons/fc"
 import { useNavigate } from "react-router-dom"
 import { auth } from "../../../firebase"
-import { firestoreService } from "../../services/FireStoreService"
-import { setPersistUid } from "../../store/slices/persistSlice"
-import { setLoggedInUser } from "../../store/slices/userSlice"
-import { useAppDispatch } from "../../store/storeHooks"
-import type { UserType } from "../../types/userTypes"
 import CustomButton from "../../components/ui/CustomButton"
+import useAuth from "../../hooks/useAuth"
 
 function Signup() {
 
   const [email, setEmail] = useState("")
   const [name, setName] = useState("")
   const [password, setPassword] = useState("")
-  const navigate = useNavigate()
-  const dispatch = useAppDispatch();
   const [loader, setLoader] = useState(false);
-
-  const createUser = async (uid: string, email: string | null, name: string | null) => {
-
-    const userData: UserType = {
-      uid: uid,
-      email: email!,
-      name: name!,
-      bio: "Looks Good, Hope For The Best",
-      avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
-    }
-
-    // 2️⃣ Create user document in Firestore
-    await firestoreService.addDocument("users", userData, uid);
-    dispatch(setLoggedInUser(userData));
-    dispatch(setPersistUid(userData?.uid!));
-    navigate("/");
-
-  }
+  const { createUser, handleGoogleLogin } = useAuth();
+  const navigate = useNavigate()
 
   const handleSignup = async () => {
     try {
@@ -44,21 +22,11 @@ function Signup() {
       const user = userCredential.user;
       await createUser(user.uid, user.email, name || user.displayName);
       setLoader(false);
+      navigate("/");
     } catch (error: any) {
       setLoader(false);
       console.error("Signup error:", error.message)
       alert(error.message);
-    }
-  }
-
-  const handleGoogleLogin = async () => {
-    const provider = new GoogleAuthProvider()
-    try {
-      const result = await signInWithPopup(auth, provider)
-      await createUser(result.user.uid, result.user.email, result.user.displayName);
-      console.log("User:", result.user)
-    } catch (error) {
-      console.error("Login error:", error)
     }
   }
 
@@ -95,7 +63,7 @@ function Signup() {
             required
             className="w-full rounded-lg border px-4 py-2 focus:border-blue-500 focus:outline-none"
           />
-          <CustomButton onClick={handleSignup} title="Login" loader={loader} disabled={loader} style="w-full h-[40px]" />
+          <CustomButton onClick={handleSignup} title="Login" loader={loader} disabled={loader} style="w-full bg-blue-600 text-white" />
 
         </div>
 

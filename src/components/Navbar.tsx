@@ -1,5 +1,6 @@
 import { signOut } from "firebase/auth";
-import { Bell, LogOut, Search, Upload } from "lucide-react";
+import { Bell, LogOut, Search, Upload, Video, Menu, X } from "lucide-react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 import { setPersistUid } from "../store/slices/persistSlice";
@@ -9,56 +10,236 @@ import { useAppDispatch, useAppSelector } from "../store/storeHooks";
 const Navbar = () => {
     const navigation = useNavigate();
     const dispatch = useAppDispatch();
-    const {loggedInUser} = useAppSelector(store=>store.user);
-    const {avatar,name} = loggedInUser!;
+    const { loggedInUser } = useAppSelector(store => store.user);
+    const { avatar, name } = loggedInUser!;
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const [showProfileMenu, setShowProfileMenu] = useState(false);
 
     const handleLogout = async () => {
         try {
-            await signOut(auth)
-            console.log("User logged out successfully")
+            await signOut(auth);
+            console.log("User logged out successfully");
             dispatch(setLoggedInUser(null));
             dispatch(setPersistUid(""));
             navigation("/login");
-            // Redirect to login page if needed
         } catch (error) {
-            console.error("Error logging out:", error)
+            console.error("Error logging out:", error);
         }
-    }
+    };
+
+    const handleSearch = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (searchQuery.trim()) {
+            console.log("Searching for:", searchQuery);
+            // TODO: Implement search functionality
+        }
+    };
+
     return (
-        <nav className="flex items-center justify-between px-6 py-3 bg-white shadow-md sticky top-0 z-10">
-            {/* Left: Logo + Title */}
-            <div className="flex items-center gap-2">
-                <img
-                    src={avatar}
-                    alt="logo"
-                    className="w-8 h-8"
-                />
-                <span className="text-xl font-bold text-gray-800">{name}</span>
-            </div>
+        <>
+            <nav className="sticky top-0 z-50 bg-white shadow-lg border-b border-gray-200">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="flex items-center justify-between h-16">
+                        {/* Left: Logo + Brand */}
+                        <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigation("/")}>
+                            <div className="relative">
+                                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                                <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl">
+                                    <Video className="w-6 h-6 text-white" />
+                                </div>
+                            </div>
+                            <div className="hidden sm:block">
+                                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                    Attoz
+                                </h1>
+                                <p className="text-xs text-gray-500 -mt-1">Share Your Stories</p>
+                            </div>
+                        </div>
 
-            {/* Middle: Search */}
-            <div className="flex items-center bg-gray-100 rounded-lg px-3 py-1 w-1/3">
-                <input
-                    type="text"
-                    placeholder="Search..."
-                    className="bg-transparent outline-none flex-1 px-2 text-sm"
-                />
-                <Search className="text-gray-500" size={18} />
-            </div>
+                        {/* Middle: Search Bar */}
+                        <form 
+                            onSubmit={handleSearch}
+                            className="hidden md:flex items-center flex-1 max-w-2xl mx-8"
+                        >
+                            <div className="relative w-full group">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search videos, creators..."
+                                    className="w-full px-4 py-2.5 pl-12 pr-4 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm placeholder:text-gray-400"
+                                />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                {searchQuery && (
+                                    <button
+                                        type="button"
+                                        onClick={() => setSearchQuery("")}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                    >
+                                        <X size={18} />
+                                    </button>
+                                )}
+                            </div>
+                        </form>
 
-            {/* Right: Icons */}
-            <div className="flex items-center gap-4">
-                <Upload onClick={() => navigation("videoUpload")} className="w-6 h-6 text-gray-700 cursor-pointer" />
-                <Bell onClick={() => navigation("/")} className="w-6 h-6 text-gray-700 cursor-pointer" />
-                <img
-                    src={avatar}
-                    alt="profile"
-                    className="w-9 h-9 rounded-full cursor-pointer"
-                />
-                <LogOut onClick={handleLogout} className="w-6 h-6 text-gray-700 cursor-pointer" />
-            </div>
-        </nav>
-    )
-}
+                        {/* Right: Actions */}
+                        <div className="flex items-center gap-2">
+                            {/* Upload Button */}
+                            <button
+                                onClick={() => navigation("videoUpload")}
+                                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all font-semibold"
+                            >
+                                <Upload size={18} />
+                                <span className="hidden lg:inline">Upload</span>
+                            </button>
 
-export default Navbar
+                            {/* Notifications */}
+                            <button
+                                onClick={() => navigation("/")}
+                                className="relative p-2.5 hover:bg-gray-100 rounded-full transition-colors"
+                                title="Notifications"
+                            >
+                                <Bell size={22} className="text-gray-700" />
+                                <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+
+                            {/* Profile Menu */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowProfileMenu(!showProfileMenu)}
+                                    className="flex items-center gap-2 p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    <img
+                                        src={avatar}
+                                        alt={name}
+                                        className="w-9 h-9 rounded-full border-2 border-purple-500 object-cover"
+                                    />
+                                </button>
+
+                                {/* Dropdown Menu */}
+                                {showProfileMenu && (
+                                    <>
+                                        <div 
+                                            className="fixed inset-0 z-10" 
+                                            onClick={() => setShowProfileMenu(false)}
+                                        ></div>
+                                        <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-20 animate-slideDown">
+                                            <div className="px-4 py-3 border-b border-gray-200">
+                                                <p className="font-semibold text-gray-900">{name}</p>
+                                                <p className="text-sm text-gray-500 truncate">View Profile</p>
+                                            </div>
+                                            <button
+                                                onClick={() => {
+                                                    navigation("videoUpload");
+                                                    setShowProfileMenu(false);
+                                                }}
+                                                className="w-full px-4 py-2.5 text-left hover:bg-gray-50 flex items-center gap-3 transition-colors sm:hidden"
+                                            >
+                                                <Upload size={18} className="text-gray-600" />
+                                                <span className="text-gray-700">Upload Video</span>
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    navigation("/");
+                                                    setShowProfileMenu(false);
+                                                }}
+                                                className="w-full px-4 py-2.5 text-left hover:bg-gray-50 flex items-center gap-3 transition-colors"
+                                            >
+                                                <Video size={18} className="text-gray-600" />
+                                                <span className="text-gray-700">My Videos</span>
+                                            </button>
+                                            <div className="border-t border-gray-200 mt-2 pt-2">
+                                                <button
+                                                    onClick={handleLogout}
+                                                    className="w-full px-4 py-2.5 text-left hover:bg-red-50 flex items-center gap-3 transition-colors text-red-600"
+                                                >
+                                                    <LogOut size={18} />
+                                                    <span className="font-semibold">Logout</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </>
+                                )}
+                            </div>
+
+                            {/* Mobile Menu Button */}
+                            <button
+                                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                                className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
+                            >
+                                {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Mobile Search */}
+                    <form 
+                        onSubmit={handleSearch}
+                        className="md:hidden pb-4"
+                    >
+                        <div className="relative group">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                placeholder="Search videos, creators..."
+                                className="w-full px-4 py-2.5 pl-12 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm"
+                            />
+                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                        </div>
+                    </form>
+                </div>
+            </nav>
+
+            {/* Mobile Menu Overlay */}
+            {isMenuOpen && (
+                <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMenuOpen(false)}>
+                    <div 
+                        className="absolute top-16 left-0 right-0 bg-white shadow-xl p-4 space-y-2 animate-slideDown"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <button
+                            onClick={() => {
+                                navigation("videoUpload");
+                                setIsMenuOpen(false);
+                            }}
+                            className="w-full px-4 py-3 text-left hover:bg-blue-50 rounded-lg flex items-center gap-3 transition-colors"
+                        >
+                            <Upload size={20} className="text-blue-600" />
+                            <span className="font-semibold text-gray-700">Upload Video</span>
+                        </button>
+                        <button
+                            onClick={() => {
+                                navigation("/");
+                                setIsMenuOpen(false);
+                            }}
+                            className="w-full px-4 py-3 text-left hover:bg-blue-50 rounded-lg flex items-center gap-3 transition-colors"
+                        >
+                            <Bell size={20} className="text-gray-600" />
+                            <span className="font-semibold text-gray-700">Notifications</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            <style>{`
+                @keyframes slideDown {
+                    from {
+                        opacity: 0;
+                        transform: translateY(-10px);
+                    }
+                    to {
+                        opacity: 1;
+                        transform: translateY(0);
+                    }
+                }
+                .animate-slideDown {
+                    animation: slideDown 0.2s ease-out;
+                }
+            `}</style>
+        </>
+    );
+};
+
+export default Navbar;

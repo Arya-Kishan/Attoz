@@ -8,6 +8,7 @@ import CustomButton from "../../components/ui/CustomButton"
 import { firestoreService } from "../../services/FireStoreService"
 import { useAppSelector } from "../../store/storeHooks"
 import type { PostType } from "../../types/postType"
+import { showToast } from "../../services/Helper"
 
 const CLOUD_NAME = "dltwhnblh"
 const UPLOAD_PRESET = "AttozApp"
@@ -59,9 +60,9 @@ export default function VideoUploadPage() {
         thumbnail,
         likes: [],
         comments: [],
-        views: [],
+        views: 0,
         share: [],
-        createdAt:serverTimestamp,
+        createdAt: serverTimestamp,
         user: { avatar: loggedInUser!.avatar, name: loggedInUser!.name, uid: user.uid },
       };
 
@@ -73,11 +74,11 @@ export default function VideoUploadPage() {
       setThumbnailPreview(null)
       setTitle("")
       setDescription("")
-      alert("Video uploaded successfully 🎉");
+      showToast("Video uploaded successfully 🎉", "success");
       navigation("/");
     } catch (error) {
       console.error("Error uploading video:", error)
-      alert("Upload failed ❌")
+      showToast("Upload failed ❌", "error")
     } finally {
       setLoading(false)
     }

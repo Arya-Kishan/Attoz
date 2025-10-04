@@ -1,4 +1,3 @@
-// src/services/firestoreService.ts
 import type { User as FirebaseUser } from "firebase/auth";
 import type { DocumentData } from "firebase/firestore";
 import {
@@ -17,51 +16,40 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase";
 
-type FirestoreResponse<T = any> = {
+export type FirestoreResponse<T = any> = {
     success: boolean;
-    message?: string;
+    message: string;
     data?: T;
     error?: string;
-    statusCode?: number
 };
-
 
 export const firestoreService = {
 
     getDocumentById: async <T = DocumentData>(
         collectionName: string,
         docId: string
-    ): Promise<(T & { docId: string }) | null> => {
+    ): Promise<T & { docId: string } | null> => {
         try {
-            const docRef = doc(db, collectionName, docId)
-            const docSnap = await getDoc(docRef)
-            if (docSnap.exists()) {
-                return { docId: docSnap.id, ...(docSnap.data() as T) }
-            }
-            return null
-        } catch (error) {
-            console.error("Error fetching document:", error)
-            return null
+            const docRef = doc(db, collectionName, docId);
+            const snapshot = await getDoc(docRef);
+            if (!snapshot.exists()) return null;
+            return { docId: snapshot.id, ...(snapshot.data() as T) };
+        } catch (error: any) {
+            throw { success: false, message: "Failed to fetch document", error: error.message } as FirestoreResponse;
         }
     },
-
 
     getAllDocuments: async <T = DocumentData>(
         collectionName: string
     ): Promise<(T & { docId: string })[]> => {
         try {
-            const colRef = collection(db, collectionName)
-            const querySnapshot = await getDocs(colRef)
-            return querySnapshot.docs.map(docSnap => ({
-                docId: docSnap.id,
-                ...(docSnap.data() as T),
-            }))
-        } catch (error) {
-            console.error("Error fetching all documents:", error)
-            return []
+            const colRef = collection(db, collectionName);
+            const snapshot = await getDocs(colRef);
+            return snapshot.docs.map(docSnap => ({ docId: docSnap.id, ...(docSnap.data() as T) }));
+        } catch (error: any) {
+            throw { success: false, message: "Failed to fetch documents", error: error.message } as FirestoreResponse;
         }
     },
-
 
     queryByField: async <T = DocumentData>(
         collectionName: string,
@@ -69,274 +57,196 @@ export const firestoreService = {
         value: any
     ): Promise<(T & { docId: string })[]> => {
         try {
-            const colRef = collection(db, collectionName)
-            const q = query(colRef, where(field, "==", value))
-            const querySnapshot = await getDocs(q)
-            return querySnapshot.docs.map(docSnap => ({
-                docId: docSnap.id,
-                ...(docSnap.data() as T),
-            }))
-        } catch (error) {
-            console.error(`Error querying ${collectionName} by ${field}:`, error)
-            return []
+            const colRef = collection(db, collectionName);
+            const q = query(colRef, where(field, "==", value));
+            const snapshot = await getDocs(q);
+            return snapshot.docs.map(docSnap => ({ docId: docSnap.id, ...(docSnap.data() as T) }));
+        } catch (error: any) {
+            throw { success: false, message: `Query failed for ${field}`, error: error.message } as FirestoreResponse;
         }
     },
-
 
     addDocument: async <T = DocumentData>(
         collectionName: string,
         data: T,
         docId?: string
-    ): Promise<string | null> => {
+    ): Promise<string> => {
         try {
             if (docId) {
-                const docRef = doc(db, collectionName, docId)
-                await setDoc(docRef, { ...data, createdAt: serverTimestamp(), docId: docId })
-                return docRef.id
+                const docRef = doc(db, collectionName, docId);
+                await setDoc(docRef, { ...data, createdAt: serverTimestamp(), docId });
+                return docRef.id;
             } else {
                 const colRef = collection(db, collectionName);
                 const newDocRef = doc(colRef);
                 await setDoc(newDocRef, { ...data, createdAt: serverTimestamp(), docId: newDocRef.id });
                 return newDocRef.id;
             }
-        } catch (error) {
-            console.error("Error adding document:", error)
-            return null
+        } catch (error: any) {
+            throw { success: false, message: "Failed to add document", error: error.message } as FirestoreResponse;
         }
     },
-
 
     updateDocument: async <T = DocumentData>(
         collectionName: string,
         docId: string,
         data: Partial<T>
-    ): Promise<boolean> => {
+    ): Promise<void> => {
         try {
-            const docRef = doc(db, collectionName, docId)
-            await updateDoc(docRef, data)
-            return true
-        } catch (error) {
-            console.error("Error updating document:", error)
-            return false
+            await updateDoc(doc(db, collectionName, docId), data);
+        } catch (error: any) {
+            throw { success: false, message: "Failed to update document", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    deleteDocument: async (collectionName: string, docId: string): Promise<boolean> => {
+    deleteDocument: async (collectionName: string, docId: string): Promise<void> => {
         try {
-            const docRef = doc(db, collectionName, docId)
-            await deleteDoc(docRef)
-            return true
-        } catch (error) {
-            console.error("Error deleting document:", error)
-            return false
+            await deleteDoc(doc(db, collectionName, docId));
+        } catch (error: any) {
+            throw { success: false, message: "Failed to delete document", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async updateByField(
+    updateByField: async (
         collectionName: string,
         fieldName: string,
         fieldValue: any,
         newData: Record<string, any>
-    ): Promise<FirestoreResponse<number>> {
+    ): Promise<number> => {
         try {
             const colRef = collection(db, collectionName);
             const q = query(colRef, where(fieldName, "==", fieldValue));
             const snapshot = await getDocs(q);
-
-            if (snapshot.empty) {
-                return { success: false, message: "No matching documents found" };
-            }
+            if (snapshot.empty) return 0;
 
             for (const docSnap of snapshot.docs) {
-                const ref = doc(db, collectionName, docSnap.id);
-                await updateDoc(ref, newData);
+                await updateDoc(doc(db, collectionName, docSnap.id), newData);
             }
 
-            return {
-                success: true,
-                message: `Updated ${snapshot.size} document(s)`,
-                data: snapshot.size,
-            };
+            return snapshot.size;
         } catch (error: any) {
-            console.error("🔥 Firestore updateByField error:", error);
-            return { success: false, message: "Failed to update", error: error.message };
+            throw { success: false, message: "Failed to update by field", error: error.message } as FirestoreResponse;
         }
     },
 
-    /**
-     * Search by field and delete matching documents
-     */
-    async deleteByField(
+    deleteByField: async (
         collectionName: string,
         fieldName: string,
         fieldValue: any
-    ): Promise<FirestoreResponse<number>> {
+    ): Promise<number> => {
         try {
             const colRef = collection(db, collectionName);
             const q = query(colRef, where(fieldName, "==", fieldValue));
             const snapshot = await getDocs(q);
-
-            if (snapshot.empty) {
-                return { success: false, message: "No matching documents found" };
-            }
+            if (snapshot.empty) return 0;
 
             for (const docSnap of snapshot.docs) {
-                const ref = doc(db, collectionName, docSnap.id);
-                await deleteDoc(ref);
+                await deleteDoc(doc(db, collectionName, docSnap.id));
             }
 
-            return {
-                success: true,
-                message: `Deleted ${snapshot.size} document(s)`,
-                data: snapshot.size,
-            };
+            return snapshot.size;
         } catch (error: any) {
-            console.error("🔥 Firestore deleteByField error:", error);
-            return { success: false, message: "Failed to delete", error: error.message };
+            throw { success: false, message: "Failed to delete by field", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async updateArrayField(
+    updateArrayField: async (
         collectionName: string,
         docId: string,
         fieldName: string,
         value: any,
         operation: "union" | "remove"
-    ): Promise<{ success: boolean; message: string; data?: any }> {
+    ): Promise<void> => {
         try {
             const docRef = doc(db, collectionName, docId);
-
-            if (operation === "union") {
-                await updateDoc(docRef, {
-                    [fieldName]: arrayUnion(value),
-                });
-                return {
-                    success: true,
-                    message: `✅ Value successfully added to '${fieldName}'`,
-                    data: { docId, operation, value },
-                };
-            }
-
-            if (operation === "remove") {
-                await updateDoc(docRef, {
-                    [fieldName]: arrayRemove(value),
-                });
-                return {
-                    success: true,
-                    message: `✅ Value successfully removed from '${fieldName}'`,
-                    data: { docId, operation, value },
-                };
-            }
-
-            return {
-                success: false,
-                message: "❌ Invalid operation type. Use 'union' or 'remove'.",
-            };
+            if (operation === "union") await updateDoc(docRef, { [fieldName]: arrayUnion(value) });
+            else if (operation === "remove") await updateDoc(docRef, { [fieldName]: arrayRemove(value) });
+            else throw new Error("Invalid operation type");
         } catch (error: any) {
-            console.error("🔥 Firestore updateArrayField error:", error);
-            return {
-                success: false,
-                message: error?.message || "Unknown error occurred while updating array field.",
-            };
+            throw { success: false, message: "Failed to update array field", error: error.message } as FirestoreResponse;
         }
     },
 
-    async addNestedDocument(
+    addNestedDocument: async (
         parentCollection: string,
         parentDocId: string,
         nestedCollection: string,
         nestedDocId: string,
         data: Record<string, any>,
         addTimestamp: boolean = true
-    ): Promise<FirestoreResponse<string>> {
+    ): Promise<string> => {
         try {
             const nestedRef = doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId);
             const payload = addTimestamp ? { ...data, createdAt: serverTimestamp() } : data;
             await setDoc(nestedRef, payload);
-            return { success: true, data: nestedRef.id };
+            return nestedRef.id;
         } catch (error: any) {
-            console.error("🔥 Firestore add error:", error);
-            return { success: false, error: error.message };
+            throw { success: false, message: "Failed to add nested document", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async getAllNestedDocument(
+    getAllNestedDocument: async (
         parentCollection: string,
         parentDocId: string,
         nestedCollection: string
-    ): Promise<FirestoreResponse<any[]>> {
+    ): Promise<any[]> => {
         try {
             const nestedCol = collection(db, parentCollection, parentDocId, nestedCollection);
             const snapshot = await getDocs(nestedCol);
-            const docs = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-            return { success: true, data: docs };
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
         } catch (error: any) {
-            console.error("🔥 Firestore getAll error:", error);
-            return { success: false, error: error.message };
+            throw { success: false, message: "Failed to fetch nested documents", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async getSingleNestedDocument(
+    getSingleNestedDocument: async (
         parentCollection: string,
         parentDocId: string,
         nestedCollection: string,
         nestedDocId: string
-    ): Promise<FirestoreResponse<any>> {
+    ): Promise<any> => {
         try {
             const nestedRef = doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId);
             const snapshot = await getDoc(nestedRef);
-            if (!snapshot.exists()) {
-                return { success: false, error: "Document not found" };
-            }
-            return { success: true, data: { id: snapshot.id, ...snapshot.data() } };
+            if (!snapshot.exists()) throw new Error("Nested document not found");
+            return { id: snapshot.id, ...snapshot.data() };
         } catch (error: any) {
-            console.error("🔥 Firestore getOne error:", error);
-            return { success: false, error: error.message };
+            throw { success: false, message: "Failed to fetch nested document", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async updateNestedDocument(
+    updateNestedDocument: async (
         parentCollection: string,
         parentDocId: string,
         nestedCollection: string,
         nestedDocId: string,
         data: Record<string, any>
-    ): Promise<FirestoreResponse<boolean>> {
+    ): Promise<void> => {
         try {
-            const nestedRef = doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId);
-            await updateDoc(nestedRef, data);
-            return { success: true, data: true };
+            await updateDoc(doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId), data);
         } catch (error: any) {
-            console.error("🔥 Firestore update error:", error);
-            return { success: false, error: error.message };
+            throw { success: false, message: "Failed to update nested document", error: error.message } as FirestoreResponse;
         }
     },
 
-
-    async removeNestedDocument(
+    removeNestedDocument: async (
         parentCollection: string,
         parentDocId: string,
         nestedCollection: string,
         nestedDocId: string
-    ): Promise<FirestoreResponse<boolean>> {
+    ): Promise<void> => {
         try {
-            const nestedRef = doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId);
-            await deleteDoc(nestedRef);
-            return { success: true, data: true };
+            await deleteDoc(doc(db, parentCollection, parentDocId, nestedCollection, nestedDocId));
         } catch (error: any) {
-            console.error("🔥 Firestore remove error:", error);
-            return { success: false, error: error.message };
+            throw { success: false, message: "Failed to remove nested document", error: error.message } as FirestoreResponse;
         }
     },
 
-
     getCurrentUser: (): FirebaseUser | null => {
-        return auth.currentUser
-    },
-}
+        try {
+            return auth.currentUser;
+        } catch (error: any) {
+            throw { success: false, message: "Failed to get current user", error: error.message } as FirestoreResponse;
+        }
+    }
+};

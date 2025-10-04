@@ -22,9 +22,8 @@ const CustomButton: React.FC<ButtonProps> = ({
             onClick={onClick}
             disabled={disabled || loader}
             className={`flex items-center justify-center gap-2 px-4 py-2 rounded-lg font-medium 
-                  transition-all duration-200 bg-blue-600 text-white 
-                  disabled:opacity-50 disabled:cursor-not-allowed 
-                  hover:bg-blue-700 ${style}`}
+                  transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed 
+                  hover:bg-blue-700 h-[40px] ${style}`}
         >
             {loader ? (
                 <div className="h-5 w-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>

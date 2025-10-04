@@ -6,7 +6,7 @@ export type PostType = {
     user: { name: string, avatar: string, uid: string },
     video: {url:string,publicId:string},
     createdAt: any,
-    views: any,
+    views: number,
     likes: any,
     comments:any,
     share: any,
@@ -22,15 +22,14 @@ export type LikedType = {
 }
 export type CommentType = {
     docId: string,
-    commentId: string,        
     postId: string,           
-    userId: string,           
-    text: string,             
+    comment: string,             
     createdAt: any,     
     updatedAt?: any,   
+    uid: string,           
     name: string,
     avatar: string,
 }
 
 export type ShareType = {}
-export type ViewType = {}
+export type ViewType = LikedType
