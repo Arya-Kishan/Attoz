@@ -1,6 +1,6 @@
 import axios from "axios";
 import { serverTimestamp } from "firebase/firestore";
-import { Film, Image, Upload, X } from "lucide-react";
+import { Film, Image, Sparkles, Upload, X } from "lucide-react";
 import { memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase";
@@ -71,25 +71,86 @@ export default function VideoUploadPage() {
   const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [videoPreview, setVideoPreview] = useState<string | null>(null);
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null);
+  const [autoThumbnail, setAutoThumbnail] = useState<File | null>(null);
+  const [isAutoThumbnail, setIsAutoThumbnail] = useState(true);
+  const [generatingThumbnail, setGeneratingThumbnail] = useState(false);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const { loggedInUser } = useAppSelector(store => store.user);
   const navigation = useNavigate();
 
-  const uploadToCloudinary = async (file: File, type: "video" | "image") => {
-    const formData = new FormData();
-    formData.append("file", file);
-    formData.append("upload_preset", UPLOAD_PRESET);
+  // Generate thumbnail from video at 2 seconds
+  const generateThumbnailFromVideo = useCallback(async (file: File): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const video = document.createElement('video');
+      video.preload = 'metadata';
+      video.muted = true;
 
-    const { data } = await axios.post(
-      `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`,
-      formData
-    );
-    return { url: data.secure_url, publicId: data.public_id };
+      video.onloadedmetadata = () => {
+        // Seek to 2 seconds or 10% of video duration, whichever is smaller
+        const seekTime = Math.min(2, video.duration * 0.1);
+        video.currentTime = seekTime;
+      };
+
+      video.onseeked = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error('Could not get canvas context'));
+          return;
+        }
+
+        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        canvas.toBlob((blob) => {
+          if (blob) {
+            // Convert Blob to File
+            const thumbnailFile = new File([blob], 'thumbnail.jpg', { type: 'image/jpeg' });
+            resolve(thumbnailFile);
+          } else {
+            reject(new Error('Could not generate thumbnail'));
+          }
+          video.remove();
+        }, 'image/jpeg', 0.9);
+      };
+
+      video.onerror = () => {
+        reject(new Error('Error loading video'));
+        video.remove();
+      };
+
+      video.src = URL.createObjectURL(file);
+    });
+  }, []);
+
+  const uploadToCloudinary = async (file: File | Blob, type: "video" | "image") => {
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("upload_preset", UPLOAD_PRESET);
+
+      const { data } = await axios.post(
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/${type}/upload`,
+        formData
+      );
+      console.log("CLOUDINARY : ", data);
+
+      if (type == "video") {
+        return { url: data.secure_url, publicId: data.public_id, duration: data.duration };
+      } else {
+        return { url: data.secure_url, publicId: data.public_id };
+      }
+    } catch (error) {
+      console.log("ERROR IN UPLOADING VIDEO : ", error);
+      throw error;
+    }
   };
 
-  const handleVideoSelect = useCallback((file: File) => {
+  const handleVideoSelect = useCallback(async (file: File) => {
     const fileSizeMB = file.size / (1024 * 1024);
 
     if (fileSizeMB > MAX_VIDEO_SIZE_MB) {
@@ -99,26 +160,50 @@ export default function VideoUploadPage() {
 
     setVideoFile(file);
     setVideoPreview(URL.createObjectURL(file));
-  }, []);
+
+    // Auto-generate thumbnail
+    setGeneratingThumbnail(true);
+    try {
+      const thumbnailFile = await generateThumbnailFromVideo(file);
+      setAutoThumbnail(thumbnailFile);
+      setThumbnailPreview(URL.createObjectURL(thumbnailFile));
+      setIsAutoThumbnail(true);
+      showToast("Thumbnail auto-generated from video!", "success");
+    } catch (error) {
+      console.error("Error generating thumbnail:", error);
+      showToast("Could not auto-generate thumbnail. Please upload manually.", "error");
+    } finally {
+      setGeneratingThumbnail(false);
+    }
+  }, [generateThumbnailFromVideo]);
 
   const handleThumbnailSelect = useCallback((file: File) => {
     setThumbnailFile(file);
     setThumbnailPreview(URL.createObjectURL(file));
+    setIsAutoThumbnail(false);
   }, []);
 
   const removeVideo = useCallback(() => {
     setVideoFile(null);
     setVideoPreview(null);
+    setAutoThumbnail(null);
+    setThumbnailFile(null);
+    setThumbnailPreview(null);
   }, []);
 
   const removeThumbnail = useCallback(() => {
     setThumbnailFile(null);
     setThumbnailPreview(null);
+    setIsAutoThumbnail(false);
   }, []);
 
   const handleUpload = async () => {
-    if (!videoFile || !thumbnailFile) {
-      showToast("Please select both video and thumbnail!", "error");
+    if (!videoFile) {
+      showToast("Please select a video!", "error");
+      return;
+    }
+    if (!thumbnailPreview) {
+      showToast("Please wait for thumbnail to generate or upload one manually!", "error");
       return;
     }
     if (!title.trim()) {
@@ -128,9 +213,18 @@ export default function VideoUploadPage() {
 
     setLoading(true);
     try {
+      // Determine which thumbnail to upload
+      const thumbnailToUpload = isAutoThumbnail && autoThumbnail ? autoThumbnail : thumbnailFile;
+      console.log("AUT OTHUMBNAIL", autoThumbnail)
+      console.log("FILE THUMNBNAI : ", thumbnailFile)
+
+      if (!thumbnailToUpload) {
+        throw new Error("No thumbnail available");
+      }
+
       const [video, thumbnail] = await Promise.all([
         uploadToCloudinary(videoFile, "video"),
-        uploadToCloudinary(thumbnailFile, "image")
+        uploadToCloudinary(thumbnailToUpload, "image")
       ]);
 
       const user = auth.currentUser;
@@ -147,7 +241,12 @@ export default function VideoUploadPage() {
         views: 0,
         share: [],
         createdAt: serverTimestamp,
-        user: { avatar: loggedInUser!.avatar, name: loggedInUser!.name, uid: user.uid, name_lower: loggedInUser!.name.toLowerCase() },
+        user: {
+          avatar: loggedInUser!.avatar,
+          name: loggedInUser!.name,
+          uid: user.uid,
+          name_lower: loggedInUser!.name.toLowerCase()
+        },
       };
 
       await firestoreService.addDocument("posts", mediaData);
@@ -157,6 +256,8 @@ export default function VideoUploadPage() {
       setThumbnailFile(null);
       setVideoPreview(null);
       setThumbnailPreview(null);
+      setAutoThumbnail(null);
+      setIsAutoThumbnail(true);
       setTitle("");
       setDescription("");
 
@@ -231,16 +332,34 @@ export default function VideoUploadPage() {
 
               {/* Thumbnail Upload */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Thumbnail *
-                </label>
-                <FileUploadBox
-                  type="image"
-                  file={thumbnailFile}
-                  preview={thumbnailPreview}
-                  onSelect={handleThumbnailSelect}
-                  onRemove={removeThumbnail}
-                />
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-semibold text-gray-700">
+                    Thumbnail *
+                  </label>
+                  {thumbnailPreview && isAutoThumbnail && (
+                    <span className="flex items-center gap-1 text-xs text-green-600 font-semibold">
+                      <Sparkles size={14} />
+                      Auto-generated
+                    </span>
+                  )}
+                </div>
+                {generatingThumbnail ? (
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center bg-gray-50">
+                    <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center animate-pulse">
+                      <Sparkles size={32} className="text-white" />
+                    </div>
+                    <p className="text-gray-700 font-semibold mb-1">Generating thumbnail...</p>
+                    <p className="text-sm text-gray-500">Please wait</p>
+                  </div>
+                ) : (
+                  <FileUploadBox
+                    type="image"
+                    file={thumbnailFile}
+                    preview={thumbnailPreview}
+                    onSelect={handleThumbnailSelect}
+                    onRemove={removeThumbnail}
+                  />
+                )}
               </div>
             </div>
 
@@ -261,10 +380,10 @@ export default function VideoUploadPage() {
         <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
           <h3 className="font-bold text-blue-900 mb-2">Upload Tips</h3>
           <ul className="space-y-1 text-sm text-blue-800">
+            <li>• Thumbnail is auto-generated from your video at 2 seconds</li>
+            <li>• You can upload a custom thumbnail if you prefer</li>
             <li>• Use clear, descriptive titles for better discoverability</li>
-            <li>• Choose an eye-catching thumbnail that represents your video</li>
             <li>• Keep videos under {MAX_VIDEO_SIZE_MB}MB for faster upload</li>
-            <li>• Add detailed descriptions to help viewers understand your content</li>
           </ul>
         </div>
       </div>

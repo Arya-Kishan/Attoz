@@ -1,27 +1,12 @@
-import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { firestoreService } from '../services/FireStoreService';
 import type { UserType } from '../types/userTypes';
 
 function Creators() {
-    const [scrollPosition, setScrollPosition] = useState(0);
     const [allUsers, setAllUsers] = useState<UserType[]>([]);
     const [loading, setLoading] = useState(true);
-
-    const handleScroll = (direction: 'left' | 'right') => {
-        const container = document.getElementById('artists-container');
-        if (!container) return;
-
-        const scrollAmount = 300;
-
-        if (direction === 'left') {
-            container.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
-            setScrollPosition(Math.max(0, scrollPosition - scrollAmount));
-        } else {
-            container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-            setScrollPosition(scrollPosition + scrollAmount);
-        }
-    };
+    const navigate = useNavigate();
 
     const getCreators = async () => {
         try {
@@ -75,30 +60,12 @@ function Creators() {
 
     return (
         <div className="bg-white py-8 sm:py-12">
-            <div className="max-w-full mx-auto">
+            <div className="max-w-full mx-auto px-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6 sm:mb-8 px-4">
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                         Attoz Creators
                     </h2>
-
-                    {/* Navigation Arrows - Hidden on mobile */}
-                    <div className="hidden md:flex gap-2">
-                        <button
-                            onClick={() => handleScroll('left')}
-                            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                            aria-label="Scroll left"
-                        >
-                            <ChevronLeft className="w-6 h-6 text-gray-700" />
-                        </button>
-                        <button
-                            onClick={() => handleScroll('right')}
-                            className="p-2 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-                            aria-label="Scroll right"
-                        >
-                            <ChevronRight className="w-6 h-6 text-gray-700" />
-                        </button>
-                    </div>
                 </div>
 
                 {/* Creators Carousel */}
@@ -113,7 +80,7 @@ function Creators() {
                                 key={user?.uid}
                                 className="flex-shrink-0 group cursor-pointer"
                             >
-                                <div className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 mb-2 sm:mb-3">
+                                <div onClick={() => navigate(`/profile/${user?.uid}`)} className="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 mb-2 sm:mb-3">
                                     {/* Gradient Background Circle */}
                                     <div className={`absolute inset-0 rounded-full bg-gradient-to-br ${gradients[index % gradients.length]} opacity-30 group-hover:opacity-50 transition-opacity duration-300`}></div>
 

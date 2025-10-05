@@ -10,9 +10,23 @@ interface PostCardProps {
 }
 
 const PostCard: FC<PostCardProps> = ({ detail }) => {
-    const { docId, thumbnail, title, user, views, likes, createdAt } = detail!;
+    const { docId, thumbnail, title, user, views, likes, createdAt, video } = detail!;
     const { avatar, name } = user;
     const navigation = useNavigate();
+
+    // Format duration from seconds to MM:SS or HH:MM:SS
+    const formatDuration = (seconds: number) => {
+        if (!seconds || seconds === 0) return null;
+
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = Math.floor(seconds % 60);
+
+        if (hours > 0) {
+            return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    };
 
     return (
         <div
@@ -37,7 +51,7 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
                 {/* Stats Overlay */}
                 <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
                     <div className="flex gap-2">
-                        {views && (
+                        {views && views > 0 && (
                             <div className="flex items-center gap-1.5 bg-black/80 text-white px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md">
                                 <Eye size={14} />
                                 <span>{views}</span>
@@ -53,12 +67,21 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
 
                     {/* Date Badge */}
                     {createdAt && (
-                        <div className="flex items-center gap-1.5 bg-blue-500/90 text-white px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md">
+                        <div className="flex items-center gap-1.5 bg-black/80 text-white px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md">
                             <Clock size={14} />
                             <span>{getRelativeTime(createdAt)}</span>
                         </div>
                     )}
                 </div>
+
+                {/* Video Duration Badge - Bottom Right */}
+                {video?.duration && (
+                    <div className="absolute bottom-3 right-3">
+                        <div className="bg-black/90 text-white px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-sm">
+                            {formatDuration(video.duration)}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Content */}

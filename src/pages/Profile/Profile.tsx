@@ -97,7 +97,7 @@ const Profile = () => {
                                 <img
                                     src={userDetails.avatar}
                                     alt={userDetails.name}
-                                    className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover"
+                                    className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover bg-blue-600"
                                 />
                                 <div className="md:mb-2">
                                     <h1 className="text-3xl font-bold text-gray-900 mb-1">{userDetails.name}</h1>
@@ -155,7 +155,7 @@ const Profile = () => {
                                 >
                                     <div className="relative">
                                         <img src={video!.thumbnail.url} alt={video!.title} className="w-full h-48 object-cover" />
-                                        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2">
+                                        <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2">
                                             <button
                                                 onClick={(e) => {
                                                     e.stopPropagation();

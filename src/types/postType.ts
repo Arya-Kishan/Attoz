@@ -5,7 +5,7 @@ export type PostType = {
     description: string,
     thumbnail: { url: string, publicId: string },
     user: { name: string, avatar: string, uid: string, name_lower?: string },
-    video: { url: string, publicId: string },
+    video: { url: string, publicId: string, duration?:number },
     createdAt: any,
     views: number,
     likes: any,

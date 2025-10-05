@@ -31,6 +31,8 @@ const useAuth = () => {
             avatar: photoURL ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
         }
 
+        saveUser(userData);
+
         // 2️⃣ Create user document in Firestore
         await firestoreService.addDocument("users", userData, uid);
         dispatch(setLoggedInUser(userData));
@@ -50,8 +52,9 @@ const useAuth = () => {
 
             if (userData == null) {
                 await createUser(uid, email, displayName, photoURL);
+            } else {
+                saveUser(userData);
             }
-            saveUser(userData);
         } catch (error) {
             console.error("Login error:", error);
         } finally {
