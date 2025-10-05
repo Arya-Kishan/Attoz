@@ -1,8 +1,8 @@
+import { Clock, Eye, Heart, Play } from 'lucide-react';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Eye, Heart, Play, Clock } from 'lucide-react';
-import type { PostType } from '../types/postType';
 import { getRelativeTime } from '../services/Helper';
+import type { PostType } from '../types/postType';
 import UserAvatar from './UserAvatar';
 
 interface PostCardProps {
@@ -10,7 +10,7 @@ interface PostCardProps {
 }
 
 const PostCard: FC<PostCardProps> = ({ detail }) => {
-    const { docId, thumbnail, title, user, views, likes, createdAt, video, description } = detail!;
+    const { docId, thumbnail, title, user, views, likes, createdAt, video } = detail!;
     const { avatar, name } = user;
     const navigation = useNavigate();
 
