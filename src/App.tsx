@@ -1,17 +1,18 @@
+import { useEffect, useState } from "react"
 import { Route, Routes, useLocation, useNavigate } from "react-router-dom"
+import { ClipLoader } from "react-spinners"
+import Navbar from "./components/Navbar"
 import Login from "./pages/auth/Login"
 import SignUp from "./pages/auth/SignUp"
-import Dashboard from "./pages/main/Dashboard"
-import Profile from "./pages/user/Profile"
+import Dashboard from "./pages/DashBoard/Dashboard"
 import FileUpload from "./pages/main/FileUpload"
-import { useAppDispatch, useAppSelector } from "./store/storeHooks"
-import { useEffect, useState } from "react"
+import PostDetail from "./pages/main/PostDetails/PostDetail"
+import Notification from "./pages/Notifications/Notification"
 import { firestoreService } from "./services/FireStoreService"
 import { setLoggedInUser } from "./store/slices/userSlice"
+import { useAppDispatch, useAppSelector } from "./store/storeHooks"
 import type { UserType } from "./types/userTypes"
-import { ClipLoader } from "react-spinners"
-import PostDetail from "./pages/main/PostDetails/PostDetail"
-import Navbar from "./components/Navbar"
+import Profile from "./pages/Profile/Profile"
 
 function App() {
 
@@ -62,8 +63,9 @@ function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<SignUp />} />
 
-        <Route path="/profile/:id" element={<Profile />} />
+        <Route path="/profile/:uid" element={<Profile />} />
         <Route path="/videoUpload" element={<FileUpload />} />
+        <Route path="/notification" element={<Notification />} />
         <Route path="/postDetail/:postId" element={<PostDetail />} />
 
       </Routes>

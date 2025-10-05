@@ -1,11 +1,14 @@
 import { signOut } from "firebase/auth";
 import { Bell, LogOut, Search, Upload, Video, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 import { setPersistUid } from "../store/slices/persistSlice";
 import { setLoggedInUser } from "../store/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../store/storeHooks";
+import logo from "../assets/images/attozLogo.png"
+import logoTitle from "../assets/images/attozTitle.png"
+import { setSearchedQuery, setSearchedTab } from "../store/slices/postSlice";
 
 const Navbar = () => {
     const navigation = useNavigate();
@@ -28,13 +31,18 @@ const Navbar = () => {
         }
     };
 
-    const handleSearch = (e: React.FormEvent) => {
+    const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (searchQuery.trim()) {
-            console.log("Searching for:", searchQuery);
-            // TODO: Implement search functionality
-        }
+        console.log("apple", searchQuery)
+        dispatch(setSearchedTab("search"));
+        dispatch(setSearchedQuery(searchQuery.toLowerCase()))
     };
+
+    useEffect(() => {
+        if (searchQuery == "") {
+            dispatch(setSearchedTab("post"));
+        }
+    }, [searchQuery])
 
     return (
         <>
@@ -45,20 +53,22 @@ const Navbar = () => {
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigation("/")}>
                             <div className="relative">
                                 <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
-                                <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl">
-                                    <Video className="w-6 h-6 text-white" />
-                                </div>
+                                {/* <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl"> */}
+                                {/* <Video className="w-6 h-6 text-white" /> */}
+                                {/* </div> */}
+                                <img src={logo} alt="" srcSet="" />
                             </div>
                             <div className="hidden sm:block">
-                                <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+                                {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                                     Attoz
                                 </h1>
-                                <p className="text-xs text-gray-500 -mt-1">Share Your Stories</p>
+                                <p className="text-xs text-gray-500 -mt-1">Share Your Stories</p> */}
+                                <img src={logoTitle} alt="" srcSet="" />
                             </div>
                         </div>
 
                         {/* Middle: Search Bar */}
-                        <form 
+                        <form
                             onSubmit={handleSearch}
                             className="hidden md:flex items-center flex-1 max-w-2xl mx-8"
                         >
@@ -70,11 +80,16 @@ const Navbar = () => {
                                     placeholder="Search videos, creators..."
                                     className="w-full px-4 py-2.5 pl-12 pr-4 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm placeholder:text-gray-400"
                                 />
-                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                <Search onClick={() => {
+                                    dispatch(setSearchedTab("search"));
+                                }} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
                                 {searchQuery && (
                                     <button
                                         type="button"
-                                        onClick={() => setSearchQuery("")}
+                                        onClick={() => {
+                                            setSearchQuery("");
+                                            dispatch(setSearchedTab("post"));
+                                        }}
                                         className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                                     >
                                         <X size={18} />
@@ -96,8 +111,8 @@ const Navbar = () => {
 
                             {/* Notifications */}
                             <button
-                                onClick={() => navigation("/")}
-                                className="relative p-2.5 hover:bg-gray-100 rounded-full transition-colors"
+                                onClick={() => navigation("/notification")}
+                                className="relative p-2.5 hover:bg-gray-100 rounded-full transition-colors cursor-pointer"
                                 title="Notifications"
                             >
                                 <Bell size={22} className="text-gray-700" />
@@ -120,12 +135,12 @@ const Navbar = () => {
                                 {/* Dropdown Menu */}
                                 {showProfileMenu && (
                                     <>
-                                        <div 
-                                            className="fixed inset-0 z-10" 
+                                        <div
+                                            className="fixed inset-0 z-10"
                                             onClick={() => setShowProfileMenu(false)}
                                         ></div>
                                         <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-20 animate-slideDown">
-                                            <div className="px-4 py-3 border-b border-gray-200">
+                                            <div onClick={() => navigation(`/profile/${loggedInUser!.uid}`)} className="px-4 py-3 border-b border-gray-200 cursor-pointer">
                                                 <p className="font-semibold text-gray-900">{name}</p>
                                                 <p className="text-sm text-gray-500 truncate">View Profile</p>
                                             </div>
@@ -174,7 +189,7 @@ const Navbar = () => {
                     </div>
 
                     {/* Mobile Search */}
-                    <form 
+                    <form
                         onSubmit={handleSearch}
                         className="md:hidden pb-4"
                     >
@@ -195,7 +210,7 @@ const Navbar = () => {
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMenuOpen(false)}>
-                    <div 
+                    <div
                         className="absolute top-16 left-0 right-0 bg-white shadow-xl p-4 space-y-2 animate-slideDown"
                         onClick={(e) => e.stopPropagation()}
                     >

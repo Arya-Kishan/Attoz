@@ -28,7 +28,7 @@ const LikesTab: React.FC<LikesTabProps> = ({ }) => {
                     key={i}
                     className="flex items-center gap-4 p-4 rounded-xl bg-gradient-to-r from-pink-50 to-red-50 hover:from-pink-100 hover:to-red-100 transition border border-pink-200"
                 >
-                    <UserAvatar avatar={like.avatar} name={like.name} />
+                    <UserAvatar avatar={like.avatar} name={like.name} uid={like.uid} />
                     <div className="flex-1">
                         <p className="font-bold">{like.name || "Anonymous"}</p>
                         <p className="text-sm text-gray-600">{"User"}</p>

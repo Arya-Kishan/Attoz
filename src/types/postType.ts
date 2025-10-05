@@ -1,14 +1,15 @@
 export type PostType = {
     docId?: string,
     title: string,
-    description:string,
-    thumbnail: {url:string,publicId:string},
-    user: { name: string, avatar: string, uid: string },
-    video: {url:string,publicId:string},
+    title_lower?: string,
+    description: string,
+    thumbnail: { url: string, publicId: string },
+    user: { name: string, avatar: string, uid: string, name_lower?: string },
+    video: { url: string, publicId: string },
     createdAt: any,
     views: number,
     likes: any,
-    comments:any,
+    comments: any,
     share: any,
 } | null;
 
@@ -18,15 +19,15 @@ export type LikedType = {
     createdAt?: any,
     name: string,
     avatar: string,
-    uid:string,
+    uid: string,
 }
 export type CommentType = {
     docId: string,
-    postId: string,           
-    comment: string,             
-    createdAt: any,     
-    updatedAt?: any,   
-    uid: string,           
+    postId: string,
+    comment: string,
+    createdAt: any,
+    updatedAt?: any,
+    uid: string,
     name: string,
     avatar: string,
 }

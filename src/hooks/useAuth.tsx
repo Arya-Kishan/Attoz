@@ -21,12 +21,12 @@ const useAuth = () => {
     }
 
 
-    const createUser = async (uid: string, email: string | null, name: string | null, photoURL: string | null = "") => {
+    const createUser = async (uid: string, email: string | null, name: string | null, photoURL: string | null = null) => {
 
         const userData: UserType = {
             uid: uid,
-            email: email!,
-            name: name!,
+            email: email!.toLowerCase(),
+            name: name!.toLowerCase(),
             bio: "Looks Good, Hope For The Best",
             avatar: photoURL ?? `https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`,
         }

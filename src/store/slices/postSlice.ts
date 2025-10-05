@@ -6,12 +6,16 @@ interface PostState {
     allPosts: PostType[],
     likedArr: LikedType[],
     allComments: CommentType[],
+    searchedTab: "search" | "user" | "post",
+    searchedQuery: string,
 }
 
 const initialState: PostState = {
     allPosts: [],
     likedArr: [],
     allComments: [],
+    searchedTab: "post",
+    searchedQuery: ""
 }
 
 const postSlice = createSlice({
@@ -26,9 +30,15 @@ const postSlice = createSlice({
         },
         setAllComments: (state, action: PayloadAction<CommentType[]>) => {
             state.allComments = action.payload
-        }
+        },
+        setSearchedTab: (state, action: PayloadAction<"search" | "user" | "post">) => {
+            state.searchedTab = action.payload
+        },
+        setSearchedQuery: (state, action: PayloadAction<string>) => {
+            state.searchedQuery = action.payload
+        },
     },
 })
 
-export const { setAllPosts, setLikedArr, setAllComments } = postSlice.actions
+export const { setAllPosts, setLikedArr, setAllComments, setSearchedTab, setSearchedQuery } = postSlice.actions
 export default postSlice.reducer

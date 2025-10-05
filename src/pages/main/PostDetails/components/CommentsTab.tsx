@@ -53,7 +53,7 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
             {/* Comment Input */}
             <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl border border-purple-200">
                 <div className="flex gap-3">
-                    <UserAvatar name="User" avatar={loggedInUser!.avatar} />
+                    <UserAvatar name="User" avatar={loggedInUser!.avatar} uid={loggedInUser?.uid!} />
                     <div className="flex-1">
                         <textarea
                             value={newComment}
@@ -86,6 +86,7 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
                                 <UserAvatar
                                     name={comment.name}
                                     avatar={comment.avatar}
+                                    uid={comment.uid}
                                 />
 
                                 <div className="flex-1 group relative">
@@ -101,13 +102,19 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
                                         </div>
 
                                         {/* Delete icon (visible on hover) */}
-                                        <button
-                                            onClick={() => handleDelete(comment.docId)}
-                                            className="text-gray-500 hover:text-red-500"
-                                            title="Delete comment"
-                                        >
-                                            <FaTrash className="text-sm" />
-                                        </button>
+                                        <div>
+                                            {
+                                                loggedInUser?.uid == comment.uid
+                                                &&
+                                                <button
+                                                    onClick={() => handleDelete(comment.docId)}
+                                                    className="text-gray-500 hover:text-red-500"
+                                                    title="Delete comment"
+                                                >
+                                                    <FaTrash className="text-sm" />
+                                                </button>
+                                            }
+                                        </div>
                                     </div>
 
                                     {/* Comment text */}

@@ -97,7 +97,7 @@ const PostDetail: React.FC = () => {
 
     const handleView = async () => {
         try {
-            await firestoreService.updateDocument("posts", postId!, { views: Number(postDetail!.views) + getRandomNumber(0, 10) })
+            await firestoreService.updateDocument("posts", postId!, { views: Number(postDetail!.views) + getRandomNumber(0, 5) })
         } catch (error) {
             console.error("VIEWS NOT COUNTED : ", error);
         }

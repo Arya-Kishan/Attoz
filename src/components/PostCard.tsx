@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Eye, Heart, Play, Clock } from 'lucide-react';
 import type { PostType } from '../types/postType';
 import { getRelativeTime } from '../services/Helper';
+import UserAvatar from './UserAvatar';
 
 interface PostCardProps {
     detail: PostType;
@@ -71,12 +72,7 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="relative">
-                            <img
-                                src={avatar}
-                                alt={name}
-                                className="w-10 h-10 rounded-full object-cover ring-2 ring-purple-200 group-hover:ring-purple-400 transition-all"
-                            />
-                            <div className="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-500 rounded-full border-2 border-white"></div>
+                            <UserAvatar uid={user.uid} avatar={avatar} name={name} style='w-10 h-10 rounded-full object-cover ring-2 ring-purple-200 group-hover:ring-purple-400 transition-all' />
                         </div>
                         <div className="flex flex-col">
                             <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px]">{name}</span>
