@@ -153,9 +153,9 @@ const PostDetail: React.FC = () => {
     return (
         <div className="flex flex-col lg:flex-row w-full min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50">
             {/* Main Content */}
-            <div className="flex-1 p-4 lg:p-6 max-w-6xl mx-auto lg:mx-0">
+            <div className="flex-1 p-0 md:p-4 lg:p-6 max-w-6xl mx-auto lg:mx-0">
                 {/* Video Player */}
-                <div className="w-full bg-black rounded-2xl overflow-hidden shadow-2xl mb-5 ring-4 ring-purple-100">
+                <div className="w-full bg-black rounded-0 md:rounded-2xl overflow-hidden shadow-2xl mb-5 ring-4 ring-purple-100">
                     <video
                         src={postDetail.video.url}
                         controls
@@ -169,7 +169,7 @@ const PostDetail: React.FC = () => {
                 />
 
                 {/* Tabs Section */}
-                <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-purple-100">
+                <div className="bg-white rounded-0 md:rounded-2xl shadow-lg overflow-hidden border border-purple-100">
                     {/* Tab Headers */}
                     <div className="flex bg-gradient-to-r from-blue-50 to-purple-50">
                         {tabsArr.map(({ key, icon: Icon, label, count }) => (

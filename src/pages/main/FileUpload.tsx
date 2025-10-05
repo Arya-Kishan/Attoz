@@ -272,7 +272,7 @@ export default function VideoUploadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-4">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8 px-0 md:px-4">
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8">
@@ -284,7 +284,7 @@ export default function VideoUploadPage() {
         </div>
 
         {/* Upload Form */}
-        <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100">
+        <div className="bg-white rounded-0 md:rounded-3xl shadow-xl p-8 border-2 border-gray-100">
           <div className="space-y-6">
             {/* Title Input */}
             <div>
@@ -377,7 +377,7 @@ export default function VideoUploadPage() {
         </div>
 
         {/* Info Card */}
-        <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-2xl p-6">
+        <div className="mt-6 bg-blue-50 border-2 border-blue-200 rounded-0 md:rounded-2xl p-6">
           <h3 className="font-bold text-blue-900 mb-2">Upload Tips</h3>
           <ul className="space-y-1 text-sm text-blue-800">
             <li>• Thumbnail is auto-generated from your video at 2 seconds</li>
@@ -386,6 +386,7 @@ export default function VideoUploadPage() {
             <li>• Keep videos under {MAX_VIDEO_SIZE_MB}MB for faster upload</li>
           </ul>
         </div>
+
       </div>
     </div>
   );

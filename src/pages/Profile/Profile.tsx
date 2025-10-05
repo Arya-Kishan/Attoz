@@ -87,9 +87,9 @@ const Profile = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8">
-            <div className="max-w-6xl mx-auto px-4">
+            <div className="max-w-6xl mx-auto px-0 md:px-4">
                 {/* Profile Card */}
-                <div className="rounded-3xl shadow-xl overflow-hidden mb-8 border-2 border-[#d3c8ff] bg-[#ffffff]">
+                <div className="rounded-0 md:rounded-3xl shadow-xl overflow-hidden mb-8 border-2 border-[#d3c8ff] bg-[#ffffffrounded-0 md:]">
                     <div className="h-32 bg-[#ffffff]"></div>
                     <div className="px-8 pb-8">
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 mb-6">
@@ -139,7 +139,7 @@ const Profile = () => {
                 </div>
 
                 {/* My Videos */}
-                <div className="bg-white rounded-3xl shadow-xl p-8 border-2 border-gray-100">
+                <div className="bg-white rounded-0 md:rounded-3xl shadow-xl p-8 border-2 border-gray-100">
                     <div className="flex items-center gap-3 mb-6">
                         <Video className="text-purple-600" size={28} />
                         <h2 className="text-2xl font-bold text-gray-900">My Videos</h2>

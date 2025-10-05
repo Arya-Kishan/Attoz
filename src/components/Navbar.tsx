@@ -1,7 +1,7 @@
 import { signOut } from "firebase/auth";
 import { Bell, LogOut, Search, Upload, Video, Menu, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
 import { setPersistUid } from "../store/slices/persistSlice";
 import { setLoggedInUser } from "../store/slices/userSlice";
@@ -18,6 +18,8 @@ const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [showProfileMenu, setShowProfileMenu] = useState(false);
+    const location = useLocation();
+    const showSearch = [""].includes(location.pathname.split("/")[1]);
 
     const handleLogout = async () => {
         try {
@@ -53,16 +55,9 @@ const Navbar = () => {
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigation("/")}>
                             <div className="relative">
                                 <div className="absolute inset-0 rounded-xl"></div>
-                                {/* <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl"> */}
-                                {/* <Video className="w-6 h-6 text-white" /> */}
-                                {/* </div> */}
                                 <img src={logo} alt="" srcSet="" />
                             </div>
                             <div className="hidden sm:block">
-                                {/* <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                                    Attoz
-                                </h1>
-                                <p className="text-xs text-gray-500 -mt-1">Share Your Stories</p> */}
                                 <img src={logoTitle} alt="" srcSet="" />
                             </div>
                         </div>
@@ -72,30 +67,32 @@ const Navbar = () => {
                             onSubmit={handleSearch}
                             className="hidden md:flex items-center flex-1 max-w-2xl mx-8"
                         >
-                            <div className="relative w-full group">
-                                <input
-                                    type="text"
-                                    value={searchQuery}
-                                    onChange={(e) => setSearchQuery(e.target.value)}
-                                    placeholder="Search videos, creators..."
-                                    className="w-full px-4 py-2.5 pl-12 pr-4 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm placeholder:text-gray-400"
-                                />
-                                <Search onClick={() => {
-                                    dispatch(setSearchedTab("search"));
-                                }} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
-                                {searchQuery && (
-                                    <button
-                                        type="button"
-                                        onClick={() => {
-                                            setSearchQuery("");
-                                            dispatch(setSearchedTab("post"));
-                                        }}
-                                        className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
-                                    >
-                                        <X size={18} />
-                                    </button>
-                                )}
-                            </div>
+                            {showSearch
+                                &&
+                                <div className="relative w-full group">
+                                    <input
+                                        type="text"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        placeholder="Search videos, creators..."
+                                        className="w-full px-4 py-2.5 pl-12 pr-4 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm placeholder:text-gray-400"
+                                    />
+                                    <Search onClick={() => {
+                                        dispatch(setSearchedTab("search"));
+                                    }} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                    {searchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                setSearchQuery("");
+                                                dispatch(setSearchedTab("post"));
+                                            }}
+                                            className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                                        >
+                                            <X size={18} />
+                                        </button>
+                                    )}
+                                </div>}
                         </form>
 
                         {/* Right: Actions */}
@@ -193,16 +190,20 @@ const Navbar = () => {
                         onSubmit={handleSearch}
                         className="md:hidden pb-4"
                     >
-                        <div className="relative group">
-                            <input
-                                type="text"
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                placeholder="Search videos, creators..."
-                                className="w-full px-4 py-2.5 pl-12 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm"
-                            />
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                        </div>
+                        {
+                            showSearch
+                            &&
+                            <div className="relative group">
+                                <input
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder="Search videos, creators..."
+                                    className="w-full px-4 py-2.5 pl-12 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm"
+                                />
+                                <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                            </div>
+                        }
                     </form>
                 </div>
             </nav>

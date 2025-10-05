@@ -20,9 +20,9 @@ const Recommendations: React.FC<RecommendationsProps> = ({ postDetail }) => {
 
     if (recommendations.length === 0) {
         return (
-            <aside className="w-full lg:w-96 p-4 lg:p-6">
+            <aside className="w-full lg:w-96 p-0 md:p-4 lg:p-6">
                 <div className="lg:sticky lg:top-6">
-                    <div className="bg-white rounded-2xl p-8 text-center border-2 border-gray-100">
+                    <div className="bg-white rounded-0 md:rounded-2xl p-8 text-center border-2 border-gray-100">
                         <Play className="mx-auto mb-3 text-gray-300" size={48} />
                         <p className="text-gray-600 font-semibold">No more videos</p>
                         <p className="text-sm text-gray-500">Check back later!</p>
@@ -33,7 +33,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ postDetail }) => {
     }
 
     return (
-        <aside className="w-full lg:w-96 p-4 lg:p-6 bg-gray-50 lg:bg-transparent">
+        <aside className="w-full lg:w-96 p-0 md:p-4 lg:p-6 bg-gray-50 lg:bg-transparent">
             <div className="lg:sticky lg:top-6">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
@@ -48,7 +48,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ postDetail }) => {
                         <div
                             key={rec?.docId}
                             onClick={() => handleClick(rec!.docId!)}
-                            className="group bg-white rounded-xl shadow-sm hover:shadow-xl cursor-pointer transition-all overflow-hidden border-2 border-gray-100 hover:border-purple-300 hover:-translate-y-1"
+                            className="group bg-white rounded-0 md:rounded-xl shadow-sm hover:shadow-xl cursor-pointer transition-all overflow-hidden border-2 border-gray-100 hover:border-purple-300 hover:-translate-y-1"
                         >
                             {/* Thumbnail Section */}
                             <div className="relative">

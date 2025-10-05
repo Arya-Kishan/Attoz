@@ -1,4 +1,4 @@
-import { Clock, Eye, Heart, Play } from 'lucide-react';
+import { Clock, Eye, Heart, Play, TrendingUp } from 'lucide-react';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getRelativeTime } from '../services/Helper';
@@ -14,7 +14,6 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
     const { avatar, name } = user;
     const navigation = useNavigate();
 
-    // Format duration from seconds to MM:SS or HH:MM:SS
     const formatDuration = (seconds: number) => {
         if (!seconds || seconds === 0) return null;
 
@@ -28,87 +27,110 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
         return `${minutes}:${secs.toString().padStart(2, '0')}`;
     };
 
+    const formatViews = (count: number) => {
+        if (count >= 1000000) return `${(count / 1000000).toFixed(1)}M`;
+        if (count >= 1000) return `${(count / 1000).toFixed(1)}K`;
+        return count;
+    };
+
+    const isTrending = views > 1000;
+
     return (
         <div
             onClick={() => navigation(`/postDetail/${docId}`)}
-            className="group bg-white rounded-0 md:rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 border-2 border-gray-100 hover:border-purple-200"
+            className="group cursor-pointer w-full mb-6 md:mb-0"
         >
-            {/* Thumbnail */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 aspect-video">
+            {/* Thumbnail Container with Modern Frame */}
+            <div className="relative overflow-hidden rounded-0 md:rounded-2xl bg-gray-900 aspect-video mb-3 shadow-md hover:shadow-2xl transition-all duration-500">
                 <img
                     src={thumbnail.url}
                     alt={title}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                    loading="lazy"
                 />
 
-                {/* Play Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <div className="w-20 h-20 bg-white/95 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 scale-75 group-hover:scale-100 transition-all duration-300 shadow-2xl backdrop-blur-sm">
-                        <Play className="text-blue-600 ml-1" size={32} fill="currentColor" />
+                {/* Sophisticated Gradient Overlay */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 group-hover:opacity-40 transition-opacity duration-300"></div>
+
+                {/* Animated Play Button */}
+                <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="opacity-0 group-hover:opacity-100 transition-all duration-300 transform scale-75 group-hover:scale-100">
+                        <div className="relative">
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full blur-xl opacity-60"></div>
+                            <div className="relative w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-2xl">
+                                <Play className="text-blue-600 ml-1" size={28} fill="currentColor" />
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                {/* Stats Overlay */}
-                <div className="absolute top-3 left-3 right-3 flex justify-between items-start">
-                    <div className="flex gap-2">
-                        {views && views > 0 && (
-                            <div className="flex items-center gap-1.5 bg-black/80 text-white px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md">
-                                <Eye size={14} />
-                                <span>{views}</span>
-                            </div>
-                        )}
-                        {likes && likes.length > 0 && (
-                            <div className="flex items-center gap-1.5 bg-gradient-to-r from-red-500 to-pink-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg">
-                                <Heart size={14} fill="currentColor" />
-                                <span>{likes.length}</span>
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Date Badge */}
-                    {createdAt && (
-                        <div className="flex items-center gap-1.5 bg-black/80 text-white px-3 py-1.5 rounded-full text-xs font-bold backdrop-blur-md">
-                            <Clock size={14} />
-                            <span>{getRelativeTime(createdAt)}</span>
+                {/* Top Right Badges */}
+                <div className="absolute top-3 right-3 flex flex-col gap-2">
+                    {isTrending && (
+                        <div className="bg-gradient-to-r from-orange-500 to-red-500 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1 backdrop-blur-sm">
+                            <TrendingUp size={12} />
+                            Trending
+                        </div>
+                    )}
+                    {video?.duration && (
+                        <div className="bg-black/90 text-white px-2.5 py-1 rounded-lg text-xs font-semibold backdrop-blur-md">
+                            {formatDuration(video.duration)}
                         </div>
                     )}
                 </div>
 
-                {/* Video Duration Badge - Bottom Right */}
-                {video?.duration && (
-                    <div className="absolute bottom-3 right-3">
-                        <div className="bg-black/90 text-white px-2.5 py-1 rounded-md text-xs font-bold backdrop-blur-sm">
-                            {formatDuration(video.duration)}
+                {/* Bottom Floating Stats */}
+                <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {views > 0 && (
+                        <div className="bg-white/95 backdrop-blur-md text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                            <Eye size={13} className="text-blue-600" />
+                            {formatViews(views)}
                         </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-                {/* Title */}
-                <div className="text-gray-900 mb-4 leading-snug transition-all">
-                    <p
-                        className="text-lg font-bold line-clamp-2 overflow-hidden text-ellipsis break-words"
-                    >
-                        <span className="text-gray-900 font-bold">{title}</span>
-                        {/* <span className="text-gray-500 font-normal"> {description}</span> */}
-                    </p>
+                    )}
+                    {likes && likes.length > 0 && (
+                        <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
+                            <Heart size={13} fill="currentColor" />
+                            {likes.length}
+                        </div>
+                    )}
                 </div>
 
+            </div>
 
-                {/* User Info */}
+            {/* Content Section */}
+            <div className="px-1 pb-4 md:pb-0 border-b md:border-b-0 border-gray-200">
+                {/* Title with Gradient Underline Effect */}
+                <div className="mb-3">
+                    <h3 className="text-base font-bold text-gray-900 line-clamp-2 leading-snug mb-1 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-purple-600 transition-all duration-300">
+                        {title}
+                    </h3>
+                    <div className="h-0.5 w-0 group-hover:w-12 bg-gradient-to-r from-blue-600 to-purple-600 transition-all duration-500 rounded-full"></div>
+                </div>
+
+                {/* Creator Info Row */}
                 <div className="flex items-center justify-between">
                     <div className="flex items-center gap-3">
                         <div className="relative">
-                            <UserAvatar uid={user.uid} avatar={avatar} name={name} style='w-10 h-10 rounded-full object-cover ring-2 ring-purple-200 group-hover:ring-purple-400 transition-all' />
+                            <div className="absolute inset-0 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full blur opacity-0 group-hover:opacity-75 transition-opacity duration-300"></div>
+                            <UserAvatar
+                                uid={user.uid}
+                                avatar={avatar}
+                                name={name}
+                                style='relative w-10 h-10 rounded-full object-cover border-2 border-white shadow-md group-hover:border-blue-300 transition-all duration-300'
+                            />
                         </div>
                         <div className="flex flex-col">
-                            <span className="text-sm font-semibold text-gray-800 truncate max-w-[150px]">{name}</span>
-                            <span className="text-xs text-gray-500">Creator</span>
+                            <p className="text-sm font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
+                                {name}
+                            </p>
+                            <div className="flex items-center gap-2 text-xs text-gray-500">
+                                <Clock size={11} />
+                                <span>{getRelativeTime(createdAt)}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     );

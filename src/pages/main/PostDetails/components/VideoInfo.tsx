@@ -31,7 +31,7 @@ const VideoInfo: React.FC<VideoInfoProps> = ({
     };
 
     return (
-        <div className="bg-white rounded-2xl p-5 shadow-lg mb-5 border border-purple-100">
+        <div className="bg-white rounded-0 mdLrounded-2xl p-5 shadow-lg mb-5 border border-purple-100">
             {/* Title */}
             <h1 className="text-xl md:text-2xl font-bold text-gray-900 mb-4 line-clamp-2">
                 {title}
