@@ -1,4 +1,4 @@
-import { Bell, Check, Heart, MessageCircle, Trash2, UserPlus, Video } from 'lucide-react';
+import { Bell, Check, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 interface Notification {
