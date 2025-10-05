@@ -46,9 +46,9 @@ const Navbar = () => {
 
     return (
         <>
-            <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+            <nav className="normal md:sticky top-0 z-50 bg-white shadow-sm border-b border-[#d3c8ff]">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex items-center justify-between h-16">
+                    <div className="flex items-center justify-between h-20">
                         {/* Left: Logo + Brand */}
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigation("/")}>
                             <div className="relative">
@@ -103,10 +103,10 @@ const Navbar = () => {
                             {/* Upload Button */}
                             <button
                                 onClick={() => navigation("videoUpload")}
-                                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-full hover:shadow-lg hover:scale-105 transition-all font-semibold"
+                                className="hidden sm:flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-[#d3c8ff] to-[#EAE5FF] text-white rounded-full hover:shadow-lg hover:scale-105 transition-all font-semibold border-1 border-[#8060ff]"
                             >
-                                <Upload size={18} />
-                                <span className="hidden lg:inline">Upload</span>
+                                <Upload color="#231268" size={18} />
+                                <span className="hidden lg:inline text-[#231268]">Upload</span>
                             </button>
 
                             {/* Notifications */}

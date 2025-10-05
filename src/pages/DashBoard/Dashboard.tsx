@@ -10,7 +10,7 @@ const Dashboard = () => {
   const { searchedTab } = useAppSelector(store => store.post);
 
   return (
-    <div className='w-screen h-screen overflow-x-hidden'>
+    <div className='w-screen h-full min-h-[calc(100vh-80px)] overflow-x-hidden'>
 
       {searchedTab == "post" && <AllPosts />}
       {searchedTab == "search" && <SearchedPosts />}

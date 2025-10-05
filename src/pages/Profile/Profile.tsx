@@ -89,8 +89,8 @@ const Profile = () => {
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8">
             <div className="max-w-6xl mx-auto px-4">
                 {/* Profile Card */}
-                <div className="bg-white rounded-3xl shadow-xl overflow-hidden mb-8 border-2 border-gray-100">
-                    <div className="h-32 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600"></div>
+                <div className="rounded-3xl shadow-xl overflow-hidden mb-8 border-2 border-[#d3c8ff] bg-[#ffffff]">
+                    <div className="h-32 bg-[#ffffff]"></div>
                     <div className="px-8 pb-8">
                         <div className="flex flex-col md:flex-row md:items-end md:justify-between -mt-16 mb-6">
                             <div className="flex flex-col md:flex-row md:items-end gap-4 mb-4 md:mb-0">
@@ -100,7 +100,7 @@ const Profile = () => {
                                     className="w-32 h-32 rounded-full border-4 border-white shadow-xl object-cover bg-blue-600"
                                 />
                                 <div className="md:mb-2">
-                                    <h1 className="text-3xl font-bold text-gray-900 mb-1">{userDetails.name}</h1>
+                                    <h1 className="text-3xl font-bold text-black mb-1 capitalize">{userDetails.name}</h1>
                                     <p className="text-gray-600 mb-2">{userDetails.email}</p>
                                     <p className="text-gray-700">{userDetails.bio}</p>
                                 </div>
