@@ -1,5 +1,5 @@
+import { Bell, Check, Heart, MessageCircle, Trash2, UserPlus, Video } from 'lucide-react';
 import { useState } from 'react';
-import { Bell, Heart, MessageCircle, UserPlus, Video, Trash2, Check, X } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -85,31 +85,6 @@ const Notification = () => {
 
     const unreadCount = notifications.filter(n => !n.isRead).length;
 
-    const getNotificationIcon = (type: string) => {
-        switch (type) {
-            case 'like':
-                return <Heart className="text-red-500" size={20} fill="currentColor" />;
-            case 'comment':
-                return <MessageCircle className="text-blue-500" size={20} />;
-            case 'follow':
-                return <UserPlus className="text-green-500" size={20} />;
-            case 'video':
-                return <Video className="text-purple-500" size={20} />;
-            default:
-                return <Bell className="text-gray-500" size={20} />;
-        }
-    };
-
-    const markAsRead = (id: string) => {
-        setNotifications(notifications.map(n =>
-            n.id === id ? { ...n, isRead: true } : n
-        ));
-    };
-
-    const deleteNotification = (id: string) => {
-        setNotifications(notifications.filter(n => n.id !== id));
-    };
-
     const markAllAsRead = () => {
         setNotifications(notifications.map(n => ({ ...n, isRead: true })));
     };
@@ -165,81 +140,12 @@ const Notification = () => {
                 </div>
 
                 {/* Notifications List */}
-                <div className="space-y-3">
-                    {notifications.length > 0 ? (
-                        notifications.map((notification) => (
-                            <div
-                                key={notification.id}
-                                className={`bg-white rounded-2xl shadow-md hover:shadow-lg transition-all overflow-hidden border-2 ${notification.isRead ? 'border-gray-100' : 'border-blue-200 bg-blue-50/30'
-                                    }`}
-                            >
-                                <div className="p-5 flex gap-4">
-                                    {/* Icon */}
-                                    <div className="flex-shrink-0">
-                                        <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                                            {getNotificationIcon(notification.type)}
-                                        </div>
-                                    </div>
-
-                                    {/* Content */}
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-start justify-between gap-4">
-                                            <div className="flex-1">
-                                                <h3 className={`font-bold mb-1 ${notification.isRead ? 'text-gray-800' : 'text-gray-900'}`}>
-                                                    {notification.title}
-                                                </h3>
-                                                <p className="text-gray-600 text-sm mb-2">{notification.message}</p>
-                                                <p className="text-xs text-gray-500">{notification.time}</p>
-                                            </div>
-
-                                            {/* Thumbnail or Avatar */}
-                                            {notification.thumbnail && (
-                                                <img
-                                                    src={notification.thumbnail}
-                                                    alt="thumbnail"
-                                                    className="w-20 h-11 object-cover rounded-lg flex-shrink-0"
-                                                />
-                                            )}
-                                            {!notification.thumbnail && notification.avatar && (
-                                                <img
-                                                    src={notification.avatar}
-                                                    alt="avatar"
-                                                    className="w-12 h-12 rounded-full object-cover flex-shrink-0 border-2 border-purple-200"
-                                                />
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Actions */}
-                                    <div className="flex flex-col gap-2 flex-shrink-0">
-                                        {!notification.isRead && (
-                                            <button
-                                                onClick={() => markAsRead(notification.id)}
-                                                className="w-8 h-8 bg-blue-100 text-blue-600 rounded-lg hover:bg-blue-200 transition-colors flex items-center justify-center"
-                                                title="Mark as read"
-                                            >
-                                                <Check size={16} />
-                                            </button>
-                                        )}
-                                        <button
-                                            onClick={() => deleteNotification(notification.id)}
-                                            className="w-8 h-8 bg-red-100 text-red-600 rounded-lg hover:bg-red-200 transition-colors flex items-center justify-center"
-                                            title="Delete"
-                                        >
-                                            <X size={16} />
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        ))
-                    ) : (
-                        <div className="bg-white rounded-3xl shadow-xl p-16 text-center border-2 border-gray-100">
-                            <Bell className="mx-auto mb-4 text-gray-300" size={64} />
-                            <h3 className="text-2xl font-bold text-gray-800 mb-2">No notifications</h3>
-                            <p className="text-gray-600">You're all caught up! Check back later for updates.</p>
-                        </div>
-                    )}
+                <div className="bg-white rounded-3xl shadow-xl p-16 text-center border-2 border-gray-100">
+                    <Bell className="mx-auto mb-4 text-gray-300" size={64} />
+                    <h3 className="text-2xl font-bold text-gray-800 mb-2">COMING SOON - IN PROGESS</h3>
+                    <p className="text-gray-600">You're all caught up! Check back later for updates.</p>
                 </div>
+
             </div>
         </div>
     );

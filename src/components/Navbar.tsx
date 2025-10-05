@@ -162,7 +162,7 @@ const Navbar = () => {
                                                 className="w-full px-4 py-2.5 text-left hover:bg-gray-50 flex items-center gap-3 transition-colors"
                                             >
                                                 <Video size={18} className="text-gray-600" />
-                                                <span className="text-gray-700">My Videos</span>
+                                                <span className="text-gray-700">Home</span>
                                             </button>
                                             <div className="border-t border-gray-200 mt-2 pt-2">
                                                 <button
