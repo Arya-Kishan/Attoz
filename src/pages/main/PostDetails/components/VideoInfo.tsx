@@ -3,6 +3,7 @@ import { FaEye, FaShare } from 'react-icons/fa';
 import LikeButton from '../../../../components/PostCardActions/LikeButton';
 import { getRelativeTime, showToast } from '../../../../services/Helper';
 import type { PostType } from '../../../../types/postType';
+import UserAvatar from '../../../../components/UserAvatar';
 
 interface VideoInfoProps {
     postDetail: PostType
@@ -13,13 +14,6 @@ const VideoInfo: React.FC<VideoInfoProps> = ({
 }) => {
 
     const { title, description, createdAt, user, views } = postDetail!;
-    const UserAvatar = ({ name }: { name?: string }) => {
-        return (
-            <div className="w-12 h-12 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
-                {name?.charAt(0).toUpperCase() || "U"}
-            </div>
-        );
-    };
 
     // Handle share action
     const handleShare = () => {
@@ -47,7 +41,7 @@ const VideoInfo: React.FC<VideoInfoProps> = ({
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-200">
                 {/* User Profile */}
                 <div className="flex items-center gap-3">
-                    <UserAvatar name={user?.name || title} />
+                    <UserAvatar name={user?.name || title} avatar={user.avatar} uid={user.uid} />
                     <div>
                         <p className="font-semibold text-gray-900">
                             {user?.name || "Content Creator"}

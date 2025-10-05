@@ -52,7 +52,7 @@ const Navbar = () => {
                         {/* Left: Logo + Brand */}
                         <div className="flex items-center gap-3 cursor-pointer group" onClick={() => navigation("/")}>
                             <div className="relative">
-                                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl blur-lg opacity-50 group-hover:opacity-75 transition-opacity"></div>
+                                <div className="absolute inset-0 rounded-xl"></div>
                                 {/* <div className="relative bg-gradient-to-r from-blue-600 to-purple-600 p-2 rounded-xl"> */}
                                 {/* <Video className="w-6 h-6 text-white" /> */}
                                 {/* </div> */}

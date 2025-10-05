@@ -31,7 +31,7 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
     return (
         <div
             onClick={() => navigation(`/postDetail/${docId}`)}
-            className="group bg-white rounded-0 md:rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-2 border-2 border-gray-100 hover:border-purple-200"
+            className="group bg-white rounded-0 md:rounded-3xl shadow-lg hover:shadow-2xl overflow-hidden cursor-pointer transition-all duration-300 hover:-translate-y-1 border-2 border-gray-100 hover:border-purple-200"
         >
             {/* Thumbnail */}
             <div className="relative overflow-hidden bg-gradient-to-br from-gray-800 to-gray-900 aspect-video">
@@ -92,7 +92,7 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
                         className="text-lg font-bold line-clamp-2 overflow-hidden text-ellipsis break-words"
                     >
                         <span className="text-gray-900 font-bold">{title}</span>
-                        <span className="text-gray-500 font-normal"> {description}</span>
+                        {/* <span className="text-gray-500 font-normal"> {description}</span> */}
                     </p>
                 </div>
 
