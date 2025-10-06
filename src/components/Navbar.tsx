@@ -77,9 +77,12 @@ const Navbar = () => {
                                         placeholder="Search videos, creators..."
                                         className="w-full px-4 py-2.5 pl-12 pr-4 bg-gray-50 border-2 border-gray-200 rounded-full outline-none focus:border-blue-500 focus:bg-white transition-all text-sm placeholder:text-gray-400"
                                     />
-                                    <Search onClick={() => {
-                                        dispatch(setSearchedTab("search"));
-                                    }} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20} />
+                                    <Search
+                                        onClick={() => {
+                                            dispatch(setSearchedTab("search"));
+                                        }}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-blue-500 transition-colors" size={20}
+                                    />
                                     {searchQuery && (
                                         <button
                                             type="button"
@@ -193,7 +196,7 @@ const Navbar = () => {
                         {
                             showSearch
                             &&
-                            <div className="relative group pb-4">
+                            <div className="relative group mb-4">
                                 <input
                                     type="text"
                                     value={searchQuery}

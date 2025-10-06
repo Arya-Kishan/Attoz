@@ -43,7 +43,7 @@ const Recommendations: React.FC<RecommendationsProps> = ({ postDetail }) => {
                     <span className="text-sm text-gray-500 font-medium">{recommendations.length} videos</span>
                 </div>
 
-                <div className="space-y-3 max-h-[calc(100vh-200px)] overflow-y-auto pr-2">
+                <div className="space-y-3 in-h-[calc(100vh-200px)] overflow-y-auto pr-2">
                     {recommendations.map((rec) => (
                         <div
                             key={rec?.docId}

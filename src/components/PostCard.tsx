@@ -80,19 +80,19 @@ const PostCard: FC<PostCardProps> = ({ detail }) => {
                 </div>
 
                 {/* Bottom Floating Stats */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-end gap-2 transition-opacity duration-300">
                     {views > 0 && (
                         <div className="bg-white/95 backdrop-blur-md text-gray-900 px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
                             <Eye size={13} className="text-blue-600" />
                             {formatViews(views)}
                         </div>
                     )}
-                    {likes && likes.length > 0 && (
+                    {/* {likes && likes.length > 0 && (
                         <div className="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-3 py-1.5 rounded-full text-xs font-bold shadow-lg flex items-center gap-1.5">
                             <Heart size={13} fill="currentColor" />
                             {likes.length}
                         </div>
-                    )}
+                    )} */}
                 </div>
 
             </div>
