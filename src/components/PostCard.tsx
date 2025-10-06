@@ -1,4 +1,4 @@
-import { Clock, Eye, Heart, Play, TrendingUp } from 'lucide-react';
+import { Clock, Eye, Play, TrendingUp } from 'lucide-react';
 import type { FC } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getRelativeTime } from '../services/Helper';
@@ -10,7 +10,7 @@ interface PostCardProps {
 }
 
 const PostCard: FC<PostCardProps> = ({ detail }) => {
-    const { docId, thumbnail, title, user, views, likes, createdAt, video } = detail!;
+    const { docId, thumbnail, title, user, views, createdAt, video } = detail!;
     const { avatar, name } = user;
     const navigation = useNavigate();
 

@@ -1,14 +1,14 @@
 import { signOut } from "firebase/auth";
-import { Bell, LogOut, Search, Upload, Video, Menu, X } from "lucide-react";
+import { Bell, LogOut, Menu, Search, Upload, Video, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { auth } from "../../firebase";
+import logo from "../assets/images/attozLogo.png";
+import logoTitle from "../assets/images/attozTitle.png";
 import { setPersistUid } from "../store/slices/persistSlice";
+import { setSearchedQuery, setSearchedTab } from "../store/slices/postSlice";
 import { setLoggedInUser } from "../store/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../store/storeHooks";
-import logo from "../assets/images/attozLogo.png"
-import logoTitle from "../assets/images/attozTitle.png"
-import { setSearchedQuery, setSearchedTab } from "../store/slices/postSlice";
 
 const Navbar = () => {
     const navigation = useNavigate();
