@@ -188,12 +188,12 @@ const Navbar = () => {
                     {/* Mobile Search */}
                     <form
                         onSubmit={handleSearch}
-                        className="md:hidden pb-4"
+                        className="md:hidden"
                     >
                         {
                             showSearch
                             &&
-                            <div className="relative group">
+                            <div className="relative group pb-4">
                                 <input
                                     type="text"
                                     value={searchQuery}
@@ -210,7 +210,7 @@ const Navbar = () => {
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
-                <div className="md:hidden fixed inset-0 z-40 bg-black bg-opacity-50" onClick={() => setIsMenuOpen(false)}>
+                <div className="md:hidden fixed inset-0 z-40 bg-[#000000df] bg-opacity-50" onClick={() => setIsMenuOpen(false)}>
                     <div
                         className="absolute top-16 left-0 right-0 bg-white shadow-xl p-4 space-y-2 animate-slideDown"
                         onClick={(e) => e.stopPropagation()}

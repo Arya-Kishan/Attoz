@@ -1,5 +1,4 @@
-import { Bell, Check, Trash2 } from 'lucide-react';
-import { useState } from 'react';
+import { Bell } from 'lucide-react';
 
 interface Notification {
     id: string;
@@ -13,85 +12,78 @@ interface Notification {
 }
 
 const Notification = () => {
-    const [notifications, setNotifications] = useState<Notification[]>([
-        {
-            id: '1',
-            type: 'like',
-            title: 'Sarah Johnson liked your video',
-            message: 'Your video "React Best Practices" received a new like',
-            time: '2 minutes ago',
-            isRead: false,
-            avatar: 'https://via.placeholder.com/50',
-            thumbnail: 'https://via.placeholder.com/80x45'
-        },
-        {
-            id: '2',
-            type: 'comment',
-            title: 'Mike Chen commented on your video',
-            message: '"Great tutorial! This helped me a lot. Thanks for sharing!"',
-            time: '15 minutes ago',
-            isRead: false,
-            avatar: 'https://via.placeholder.com/50',
-            thumbnail: 'https://via.placeholder.com/80x45'
-        },
-        {
-            id: '3',
-            type: 'follow',
-            title: 'Emma Rodriguez started following you',
-            message: 'You have a new follower',
-            time: '1 hour ago',
-            isRead: false,
-            avatar: 'https://via.placeholder.com/50'
-        },
-        {
-            id: '4',
-            type: 'video',
-            title: 'Your video is processing',
-            message: 'Your video "Behind the Scenes" is being processed and will be live soon',
-            time: '2 hours ago',
-            isRead: true,
-            thumbnail: 'https://via.placeholder.com/80x45'
-        },
-        {
-            id: '5',
-            type: 'like',
-            title: 'David Park liked your video',
-            message: 'Your video "City Vlog" received a new like',
-            time: '3 hours ago',
-            isRead: true,
-            avatar: 'https://via.placeholder.com/50',
-            thumbnail: 'https://via.placeholder.com/80x45'
-        },
-        {
-            id: '6',
-            type: 'comment',
-            title: 'Lisa Anderson commented',
-            message: '"Amazing content! Keep it up! 🔥"',
-            time: '5 hours ago',
-            isRead: true,
-            avatar: 'https://via.placeholder.com/50',
-            thumbnail: 'https://via.placeholder.com/80x45'
-        },
-        {
-            id: '7',
-            type: 'follow',
-            title: 'James Wilson started following you',
-            message: 'You have a new follower',
-            time: '1 day ago',
-            isRead: true,
-            avatar: 'https://via.placeholder.com/50'
-        }
-    ]);
+    // const [notifications, setNotifications] = useState<Notification[]>([
+    //     {
+    //         id: '1',
+    //         type: 'like',
+    //         title: 'Sarah Johnson liked your video',
+    //         message: 'Your video "React Best Practices" received a new like',
+    //         time: '2 minutes ago',
+    //         isRead: false,
+    //         avatar: 'https://via.placeholder.com/50',
+    //         thumbnail: 'https://via.placeholder.com/80x45'
+    //     },
+    //     {
+    //         id: '2',
+    //         type: 'comment',
+    //         title: 'Mike Chen commented on your video',
+    //         message: '"Great tutorial! This helped me a lot. Thanks for sharing!"',
+    //         time: '15 minutes ago',
+    //         isRead: false,
+    //         avatar: 'https://via.placeholder.com/50',
+    //         thumbnail: 'https://via.placeholder.com/80x45'
+    //     },
+    //     {
+    //         id: '3',
+    //         type: 'follow',
+    //         title: 'Emma Rodriguez started following you',
+    //         message: 'You have a new follower',
+    //         time: '1 hour ago',
+    //         isRead: false,
+    //         avatar: 'https://via.placeholder.com/50'
+    //     },
+    //     {
+    //         id: '4',
+    //         type: 'video',
+    //         title: 'Your video is processing',
+    //         message: 'Your video "Behind the Scenes" is being processed and will be live soon',
+    //         time: '2 hours ago',
+    //         isRead: true,
+    //         thumbnail: 'https://via.placeholder.com/80x45'
+    //     },
+    //     {
+    //         id: '5',
+    //         type: 'like',
+    //         title: 'David Park liked your video',
+    //         message: 'Your video "City Vlog" received a new like',
+    //         time: '3 hours ago',
+    //         isRead: true,
+    //         avatar: 'https://via.placeholder.com/50',
+    //         thumbnail: 'https://via.placeholder.com/80x45'
+    //     },
+    //     {
+    //         id: '6',
+    //         type: 'comment',
+    //         title: 'Lisa Anderson commented',
+    //         message: '"Amazing content! Keep it up! 🔥"',
+    //         time: '5 hours ago',
+    //         isRead: true,
+    //         avatar: 'https://via.placeholder.com/50',
+    //         thumbnail: 'https://via.placeholder.com/80x45'
+    //     },
+    //     {
+    //         id: '7',
+    //         type: 'follow',
+    //         title: 'James Wilson started following you',
+    //         message: 'You have a new follower',
+    //         time: '1 day ago',
+    //         isRead: true,
+    //         avatar: 'https://via.placeholder.com/50'
+    //     }
+    // ]);
 
-    const unreadCount = notifications.filter(n => !n.isRead).length;
-
-    const markAllAsRead = () => {
-        setNotifications(notifications.map(n => ({ ...n, isRead: true })));
-    };
-
-    const clearAll = () => {
-        setNotifications([]);
-    };
+    // const unreadCount = notifications.filter(n => !n.isRead).length;
+    const unreadCount = 3;
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-purple-50 py-8">
@@ -116,7 +108,7 @@ const Notification = () => {
                             </div>
                         </div>
 
-                        {notifications.length > 0 && (
+                        {/* {notifications.length > 0 && (
                             <div className="flex gap-2">
                                 {unreadCount > 0 && (
                                     <button
@@ -135,7 +127,7 @@ const Notification = () => {
                                     <span className="hidden sm:inline">Clear all</span>
                                 </button>
                             </div>
-                        )}
+                        )} */}
                     </div>
                 </div>
 

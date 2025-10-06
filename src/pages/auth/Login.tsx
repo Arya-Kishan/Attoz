@@ -45,7 +45,7 @@ function Login() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="flex min-h-screen items-center justify-center p-0 md:p-4">
       {/* Animated background elements */}
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-purple-200 opacity-20 blur-3xl animate-pulse"></div>
@@ -54,7 +54,7 @@ function Login() {
 
       <div className="relative w-full max-w-md">
         {/* Main card with glass effect */}
-        <div className="rounded-3xl bg-white/80 backdrop-blur-lg p-8 shadow-2xl border border-white/20 transform transition-all duration-300 hover:shadow-3xl">
+        <div className="rounded-0 md:rounded-3xl md:backdrop-blur-lg p-8 md:shadow-2xl border border-white/20 transform transition-all duration-300 hover:shadow-3xl">
           {/* Header */}
           <div className="text-center mb-8">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-4 shadow-lg">
@@ -85,8 +85,8 @@ function Login() {
                 onBlur={() => setFocusedField(null)}
                 onKeyPress={handleKeyPress}
                 className={`w-full rounded-xl border-2 bg-white pl-12 pr-4 py-3 transition-all duration-200 focus:outline-none ${focusedField === "email"
-                    ? "border-blue-500 shadow-lg shadow-blue-100"
-                    : "border-gray-200 hover:border-gray-300"
+                  ? "border-blue-500 shadow-lg shadow-blue-100"
+                  : "border-gray-200 hover:border-gray-300"
                   }`}
               />
             </div>
@@ -106,8 +106,8 @@ function Login() {
                 onBlur={() => setFocusedField(null)}
                 onKeyPress={handleKeyPress}
                 className={`w-full rounded-xl border-2 bg-white pl-12 pr-12 py-3 transition-all duration-200 focus:outline-none ${focusedField === "password"
-                    ? "border-blue-500 shadow-lg shadow-blue-100"
-                    : "border-gray-200 hover:border-gray-300"
+                  ? "border-blue-500 shadow-lg shadow-blue-100"
+                  : "border-gray-200 hover:border-gray-300"
                   }`}
               />
               <button

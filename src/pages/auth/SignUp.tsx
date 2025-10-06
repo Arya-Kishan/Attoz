@@ -38,14 +38,15 @@ function Signup() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-4">
+    <div className="flex min-h-screen items-center justify-center p-0 md:p-4">
+
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-purple-200 opacity-20 blur-3xl animate-pulse" />
         <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-blue-200 opacity-20 blur-3xl animate-pulse" style={{ animationDelay: "1s" }} />
       </div>
 
       <div className="relative w-full max-w-md">
-        <div className="rounded-3xl bg-white/80 backdrop-blur-lg p-8 shadow-2xl border border-white/20">
+        <div className="rounded-0 md:rounded-3xl bg-white/80 md:backdrop-blur-lg p-8 md:shadow-2xl border border-white/20">
           <div className="text-center mb-8">
             <div className="inline-flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 to-purple-600 mb-4 shadow-lg">
               <User className="h-8 w-8 text-white" />
@@ -139,6 +140,7 @@ function Signup() {
         <div className="absolute -z-10 -top-4 -left-4 h-24 w-24 rounded-full bg-blue-400 opacity-20 blur-2xl" />
         <div className="absolute -z-10 -bottom-4 -right-4 h-24 w-24 rounded-full bg-purple-400 opacity-20 blur-2xl" />
       </div>
+
     </div>
   )
 }

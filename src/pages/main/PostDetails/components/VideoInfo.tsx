@@ -43,7 +43,7 @@ const VideoInfo: React.FC<VideoInfoProps> = ({
                 <div className="flex items-center gap-3">
                     <UserAvatar name={user?.name || title} avatar={user.avatar} uid={user.uid} />
                     <div>
-                        <p className="font-semibold text-gray-900">
+                        <p className="font-semibold text-gray-900 capitalize">
                             {user?.name || "Content Creator"}
                         </p>
                         <p className="text-sm text-gray-600">

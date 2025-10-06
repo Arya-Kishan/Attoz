@@ -51,7 +51,7 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
     return (
         <div className="space-y-4">
             {/* Comment Input */}
-            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 rounded-xl border border-purple-200">
+            <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-4 mt-5 rounded-xl border border-purple-200">
                 <div className="flex gap-3">
                     <UserAvatar name="User" avatar={loggedInUser!.avatar} uid={loggedInUser?.uid!} />
                     <div className="flex-1">

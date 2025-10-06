@@ -155,7 +155,7 @@ const PostDetail: React.FC = () => {
             {/* Main Content */}
             <div className="flex-1 p-0 md:p-4 lg:p-6 max-w-6xl mx-auto lg:mx-0">
                 {/* Video Player */}
-                <div className="w-full bg-black rounded-0 md:rounded-2xl overflow-hidden shadow-2xl mb-5 ring-4 ring-purple-100">
+                <div className="w-full bg-black rounded-0 md:rounded-2xl overflow-hidden shadow-2xl mb-0 ring-4 ring-purple-100">
                     <video
                         src={postDetail.video.url}
                         controls
@@ -190,7 +190,7 @@ const PostDetail: React.FC = () => {
                     </div>
 
                     {/* Tab Content */}
-                    <div className="p-5 max-h-[520px] overflow-y-auto">
+                    <div className="p-0 max-h-[520px] overflow-y-auto">
                         {tab === "comment" ? (
                             <CommentsTab
                                 onCommentSubmit={handleCommentSubmit}
