@@ -116,6 +116,11 @@ const PostDetail: React.FC = () => {
         postDetail && handleView();
     }, [postDetail]);
 
+    useEffect(() => {
+        // scroll to top whenever route changes
+        window.scrollTo(0, 0);
+    }, []);
+
     // Loading state
     if (postLoader) {
         return (

@@ -60,7 +60,7 @@ function Creators() {
 
     return (
         <div className="bg-white py-8 sm:py-12">
-            <div className="max-w-full mx-auto px-5">
+            <div className="max-w-full mx-auto px-1 md:px-5">
                 {/* Header */}
                 <div className="flex items-center justify-between mb-6 sm:mb-8 px-4">
                     <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">

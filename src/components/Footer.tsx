@@ -29,7 +29,7 @@ const Footer = () => {
             {/* Bottom Section: Copyright and Social Icons */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center pt-6 space-y-4 md:space-y-0">
                 {/* Copyright Text */}
-                <p className="text-xs text-gray-400 max-w-2xl leading-relaxed">
+                <p className="text-xs text-gray-400 max-w-2xl leading-relaxed text-center md:text-start">
                     By accessing this page, you confirm that you have read, understood, and agreed to our Terms of Service, Cookie Policy, Privacy Policy, and Content Guidelines. All rights reserved.
                 </p>
 

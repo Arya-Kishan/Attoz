@@ -9,6 +9,7 @@ import type { PostType } from '../../types/postType';
 import type { UserType } from '../../types/userTypes';
 import ProfileModal from './components/ProfileEditModal';
 import VideoEditModal from './components/VideoEditModal';
+import { useAppSelector } from '../../store/storeHooks';
 // import { deleteFromCloudinary } from '../../services/Cloudinary';
 
 const Profile = () => {
@@ -17,10 +18,13 @@ const Profile = () => {
     const [showEditVideoModal, setShowEditVideoModal] = useState(false);
     const [showEditProfileModal, setShowEditProfileModal] = useState(false);
     const [loader, setLoader] = useState(true);
+    const [postLoader, setPostLoader] = useState(true);
     const [userDetails, setUserDetails] = useState<UserType | null>();
     const [posts, setPosts] = useState<PostType[] | null>();
     const [selectedPost, setSelectedPost] = useState<PostType | null>(null);
     const navigate = useNavigate();
+    const { loggedInUser } = useAppSelector(store => store.user);
+    const isOwner = uid == loggedInUser?.uid;
 
     const getUserDetail = async (uid: string) => {
         try {
@@ -37,14 +41,14 @@ const Profile = () => {
 
     const getUserPosts = async (uid: string) => {
         try {
-            setLoader(true);
+            setPostLoader(true);
             const posts: PostType[] = await firestoreService.queryByField("posts", "user.uid", uid);
             console.log("ALL POSTS DETAILS", posts)
             setPosts(posts);
         } catch (error) {
             showToast(`${error}`, "error")
         } finally {
-            setLoader(false);
+            setPostLoader(false);
         }
     }
 
@@ -64,7 +68,7 @@ const Profile = () => {
 
 
     // Loading state
-    if (loader) {
+    if (loader || postLoader) {
         return (
             <div className='w-full h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-50 to-purple-50'>
                 <ClipLoader color="#3b82f6" size={60} />
@@ -105,15 +109,19 @@ const Profile = () => {
                                     <p className="text-gray-700">{userDetails.bio}</p>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => {
-                                    setShowEditProfileModal(true);
-                                }}
-                                className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2"
-                            >
-                                <Edit size={18} />
-                                Edit Profile
-                            </button>
+                            {
+                                isOwner
+                                &&
+                                <button
+                                    onClick={() => {
+                                        setShowEditProfileModal(true);
+                                    }}
+                                    className="w-fit px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-xl font-semibold hover:shadow-lg transition-all flex items-center gap-2 whitespace-nowrap"
+                                >
+                                    <Edit size={18} />
+                                    Edit Profile
+                                </button>
+                            }
                         </div>
 
                         {/* Stats */}
@@ -145,7 +153,7 @@ const Profile = () => {
                         <h2 className="text-2xl font-bold text-gray-900">My Videos</h2>
                     </div>
 
-                    {posts.length > 0 ? (
+                    {posts && posts.length > 0 ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {posts.map((video) => (
                                 <div
@@ -155,28 +163,32 @@ const Profile = () => {
                                 >
                                     <div className="relative">
                                         <img src={video!.thumbnail.url} alt={video!.title} className="w-full h-48 object-cover" />
-                                        <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedPost(video);
-                                                    setShowEditVideoModal(true);
-                                                }}
-                                                className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-blue-700"
-                                            >
-                                                <Edit size={18} className="text-white" />
-                                            </button>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setSelectedPost(video);
-                                                    setShowDeleteModal(true);
-                                                }}
-                                                className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-red-700"
-                                            >
-                                                <Trash2 size={18} className="text-white" />
-                                            </button>
-                                        </div>
+                                        {
+                                            isOwner
+                                            &&
+                                            <div className="absolute inset-0 bg-opacity-0 group-hover:bg-opacity-40 transition-all flex items-center justify-center gap-2">
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedPost(video);
+                                                        setShowEditVideoModal(true);
+                                                    }}
+                                                    className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-blue-700"
+                                                >
+                                                    <Edit size={18} className="text-white" />
+                                                </button>
+                                                <button
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedPost(video);
+                                                        setShowDeleteModal(true);
+                                                    }}
+                                                    className="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform scale-75 group-hover:scale-100 transition-all hover:bg-red-700"
+                                                >
+                                                    <Trash2 size={18} className="text-white" />
+                                                </button>
+                                            </div>
+                                        }
                                     </div>
                                     <div className="p-4">
                                         <h3 className="font-bold text-gray-900 line-clamp-2 mb-2">{video!.title}</h3>

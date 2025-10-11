@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase'
 import { guestUidArr } from '../constants'
 import { firestoreService } from '../services/FireStoreService'
-import { showToast } from '../services/Helper'
 import { setPersistUid } from '../store/slices/persistSlice'
 import { setLoggedInUser, setShowAuthGuard } from '../store/slices/userSlice'
 import { useAppDispatch, useAppSelector } from '../store/storeHooks'
@@ -82,14 +81,17 @@ const useAuth = () => {
 
     const isGuest = (): boolean => {
         if (guestUidArr.includes(loggedInUser?.uid!)) {
-            showToast("Login Required", "warning")
             dispatch(setShowAuthGuard(true));
             return true;
         }
         return false;
     }
 
-    return ({ handleGoogleLogin, createUser, saveUser, googleLoader, handleLogout, isGuest })
+    const isOwner = (uid: string): boolean => {
+        return loggedInUser?.uid == uid ? true : false;
+    }
+
+    return ({ handleGoogleLogin, createUser, saveUser, googleLoader, handleLogout, isGuest, isOwner })
 }
 
 export default useAuth
