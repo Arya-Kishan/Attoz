@@ -5,6 +5,7 @@ import { memo, useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../../firebase";
 import CustomButton from "../../components/ui/CustomButton";
+import useAuth from "../../hooks/useAuth";
 import { firestoreService } from "../../services/FireStoreService";
 import { showToast } from "../../services/Helper";
 import { useAppSelector } from "../../store/storeHooks";
@@ -78,6 +79,7 @@ export default function VideoUploadPage() {
   const [description, setDescription] = useState("");
   const [loading, setLoading] = useState(false);
   const { loggedInUser } = useAppSelector(store => store.user);
+  const {isGuest} = useAuth();
   const navigation = useNavigate();
 
   // Generate thumbnail from video at 2 seconds
@@ -198,6 +200,9 @@ export default function VideoUploadPage() {
   }, []);
 
   const handleUpload = async () => {
+
+    if(isGuest()) return null;
+
     if (!videoFile) {
       showToast("Please select a video!", "error");
       return;

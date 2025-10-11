@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { FaPaperPlane, FaRegComment, FaTrash } from 'react-icons/fa';
 import { ClipLoader } from 'react-spinners';
 import UserAvatar from '../../../../components/UserAvatar';
+import useAuth from '../../../../hooks/useAuth';
 import { firestoreService } from '../../../../services/FireStoreService';
 import { getRelativeTime } from '../../../../services/Helper';
 import { setAllComments } from '../../../../store/slices/postSlice';
@@ -23,11 +24,13 @@ const CommentsTab: React.FC<CommentsTabProps> = ({
     const { loggedInUser } = useAppSelector(store => store.user);
     const { allComments } = useAppSelector(store => store.post);
     const dispatch = useAppDispatch();
+    const { isGuest } = useAuth();
 
     const handleSubmit = async () => {
         if (!newComment.trim()) return;
 
         try {
+            if (isGuest()) return;
             setIsSubmitting(true);
             await onCommentSubmit(newComment);
             setNewComment("");

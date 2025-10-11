@@ -1,13 +1,10 @@
-import { signOut } from "firebase/auth";
 import { Bell, LogOut, Menu, Search, Upload, Video, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { auth } from "../../firebase";
 import logo from "../assets/images/attozLogo.png";
 import logoTitle from "../assets/images/attozTitle.png";
-import { setPersistUid } from "../store/slices/persistSlice";
+import useAuth from "../hooks/useAuth";
 import { setSearchedQuery, setSearchedTab } from "../store/slices/postSlice";
-import { setLoggedInUser } from "../store/slices/userSlice";
 import { useAppDispatch, useAppSelector } from "../store/storeHooks";
 
 const Navbar = () => {
@@ -20,18 +17,7 @@ const Navbar = () => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const location = useLocation();
     const showSearch = [""].includes(location.pathname.split("/")[1]);
-
-    const handleLogout = async () => {
-        try {
-            await signOut(auth);
-            console.log("User logged out successfully");
-            dispatch(setLoggedInUser(null));
-            dispatch(setPersistUid(""));
-            navigation("/login");
-        } catch (error) {
-            console.error("Error logging out:", error);
-        }
-    };
+    const { handleLogout } = useAuth();
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -141,7 +127,7 @@ const Navbar = () => {
                                         ></div>
                                         <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-20 animate-slideDown">
                                             <div onClick={() => navigation(`/profile/${loggedInUser!.uid}`)} className="px-4 py-3 border-b border-gray-200 cursor-pointer">
-                                                <p className="font-semibold text-gray-900">{name}</p>
+                                                <p className="font-semibold text-gray-900 capitalize">{name}</p>
                                                 <p className="text-sm text-gray-500 truncate">View Profile</p>
                                             </div>
                                             <button

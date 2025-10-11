@@ -1,10 +1,11 @@
 import { useEffect, useState, type FC } from 'react';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import useAuth from '../../hooks/useAuth';
 import { firestoreService, type FirestoreResponse } from '../../services/FireStoreService';
 import { showToast } from '../../services/Helper';
+import { setLikedArr } from '../../store/slices/postSlice';
 import { useAppDispatch, useAppSelector } from '../../store/storeHooks';
 import type { LikedType, PostType } from '../../types/postType';
-import { setLikedArr } from '../../store/slices/postSlice';
 
 interface LikeButtonProps {
   postDetail: PostType
@@ -16,10 +17,11 @@ const LikeButton: FC<LikeButtonProps> = ({ postDetail }) => {
   const [totalLikes, setTotalLikes] = useState<number>(postLikedArr.length);
   const [isLiked, setIsLiked] = useState(postLikedArr.includes(loggedInUser!.uid));
   const dispatch = useAppDispatch();
+  const { isGuest } = useAuth();
 
   const handleLike = async () => {
     try {
-
+      if (isGuest()) return;
       setIsLiked(true);
       setTotalLikes(totalLikes + 1);
       const likeData: LikedType = {

@@ -1,11 +1,13 @@
-import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth'
+import { GoogleAuthProvider, signInWithPopup, signOut } from 'firebase/auth'
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../../firebase'
+import { guestUidArr } from '../constants'
 import { firestoreService } from '../services/FireStoreService'
+import { showToast } from '../services/Helper'
 import { setPersistUid } from '../store/slices/persistSlice'
-import { setLoggedInUser } from '../store/slices/userSlice'
-import { useAppDispatch } from '../store/storeHooks'
+import { setLoggedInUser, setShowAuthGuard } from '../store/slices/userSlice'
+import { useAppDispatch, useAppSelector } from '../store/storeHooks'
 import type { UserType } from '../types/userTypes'
 
 const useAuth = () => {
@@ -13,10 +15,13 @@ const useAuth = () => {
     const navigate = useNavigate()
     const dispatch = useAppDispatch();
     const [googleLoader, setGoogleLoader] = useState(false);
+    const navigation = useNavigate();
+    const { loggedInUser } = useAppSelector(store => store.user);
 
     const saveUser = (userData: UserType) => {
         dispatch(setLoggedInUser(userData));
         dispatch(setPersistUid(userData?.uid!));
+        localStorage.setItem("local_user", JSON.stringify(userData));
         navigate("/");
     }
 
@@ -62,7 +67,29 @@ const useAuth = () => {
         }
     }
 
-    return ({ handleGoogleLogin, createUser, saveUser, googleLoader })
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            console.log("User logged out successfully");
+            dispatch(setLoggedInUser(null));
+            dispatch(setPersistUid(""));
+            localStorage.removeItem("local_user");
+            navigation("/login");
+        } catch (error) {
+            console.error("Error logging out:", error);
+        }
+    };
+
+    const isGuest = (): boolean => {
+        if (guestUidArr.includes(loggedInUser?.uid!)) {
+            showToast("Login Required", "warning")
+            dispatch(setShowAuthGuard(true));
+            return true;
+        }
+        return false;
+    }
+
+    return ({ handleGoogleLogin, createUser, saveUser, googleLoader, handleLogout, isGuest })
 }
 
 export default useAuth

@@ -8,6 +8,7 @@ import type { CommentType, LikedType, PostType } from "../../../types/postType";
 
 // Import separated components
 import { serverTimestamp } from "firebase/firestore";
+import useAuth from "../../../hooks/useAuth";
 import { setAllComments, setLikedArr } from "../../../store/slices/postSlice";
 import { useAppDispatch, useAppSelector } from "../../../store/storeHooks";
 import CommentsTab from "./components/CommentsTab";
@@ -25,6 +26,7 @@ const PostDetail: React.FC = () => {
     const [likedDetails, setLikesDetails] = useState<LikedType[]>([]);
     const dispatch = useAppDispatch();
     const { allComments } = useAppSelector(store => store.post);
+    const { isGuest } = useAuth();
 
     // Fetch post details on mount
     const getPostDetail = async () => {
@@ -43,6 +45,7 @@ const PostDetail: React.FC = () => {
     // Handle comment submission
     const handleCommentSubmit = async (comment: string) => {
         try {
+            if (isGuest()) return;
             // TODO: Implement your comment submission logic
             const commentData: CommentType = {
                 avatar: loggedInUser!.avatar,
