@@ -5,6 +5,7 @@ import { firestoreService, type FirestoreResponse } from '../../../services/Fire
 import { showToast } from '../../../services/Helper';
 import type { SetState } from '../../../types/AppTypes';
 import type { PostType } from '../../../types/postType';
+import useAuth from '../../../hooks/useAuth';
 
 interface VideoEditModalProps {
     postDetail: PostType;
@@ -14,6 +15,7 @@ interface VideoEditModalProps {
 const VideoEditModal: FC<VideoEditModalProps> = ({ postDetail, showModal, setShowModal }) => {
     const { title, description, docId } = postDetail!;
     const [isLoading, setIsLoading] = useState(false);
+    const {isGuest} = useAuth();
 
     const [videoData, setVideoData] = useState({
         title: title,
@@ -24,6 +26,7 @@ const VideoEditModal: FC<VideoEditModalProps> = ({ postDetail, showModal, setSho
 
     const handleSaveProfile = async () => {
         try {
+            if(isGuest()) return;
             await firestoreService.updateDocument("posts", docId!, editData);
             setVideoData(editData);
             setShowModal(false);

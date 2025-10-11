@@ -44,7 +44,7 @@ export default function SignUpModal() {
                 {/* Close button */}
                 <button
                     onClick={handleClose}
-                    className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors z-10"
+                    className="absolute top-4 right-4 text-gray-400 hover:text-red-500 transition-colors z-10"
                 >
                     <X className="w-6 h-6" />
                 </button>

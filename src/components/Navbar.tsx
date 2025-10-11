@@ -17,7 +17,7 @@ const Navbar = () => {
     const [showProfileMenu, setShowProfileMenu] = useState(false);
     const location = useLocation();
     const showSearch = [""].includes(location.pathname.split("/")[1]);
-    const { handleLogout } = useAuth();
+    const { handleLogout, isGuest } = useAuth();
 
     const handleSearch = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -25,6 +25,11 @@ const Navbar = () => {
         dispatch(setSearchedTab("search"));
         dispatch(setSearchedQuery(searchQuery.toLowerCase()))
     };
+
+    const handleViewProfile = () => {
+        if (isGuest()) return;
+        navigation(`/profile/${loggedInUser!.uid}`);
+    }
 
     useEffect(() => {
         if (searchQuery == "") {
@@ -126,7 +131,9 @@ const Navbar = () => {
                                             onClick={() => setShowProfileMenu(false)}
                                         ></div>
                                         <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-2xl border border-gray-200 py-2 z-20 animate-slideDown">
-                                            <div onClick={() => navigation(`/profile/${loggedInUser!.uid}`)} className="px-4 py-3 border-b border-gray-200 cursor-pointer">
+                                            <div onClick={() => {
+                                                handleViewProfile();
+                                            }} className="px-4 py-3 border-b border-gray-200 cursor-pointer">
                                                 <p className="font-semibold text-gray-900 capitalize">{name}</p>
                                                 <p className="text-sm text-gray-500 truncate">View Profile</p>
                                             </div>

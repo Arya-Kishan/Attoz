@@ -5,6 +5,7 @@ import { firestoreService, type FirestoreResponse } from '../../../services/Fire
 import { showToast } from '../../../services/Helper';
 import type { SetState } from '../../../types/AppTypes';
 import type { UserType } from '../../../types/userTypes';
+import useAuth from '../../../hooks/useAuth';
 
 interface ProfileEditModalProps {
     user: UserType;
@@ -14,6 +15,7 @@ interface ProfileEditModalProps {
 const ProfileEditModal: FC<ProfileEditModalProps> = ({ user, showModal, setShowModal }) => {
     const { name, email, avatar, bio, uid } = user!;
     const [isLoading, setIsLoading] = useState(false);
+    const {isGuest} = useAuth();
 
     const [userData, setUserData] = useState({
         name: name,
@@ -28,6 +30,7 @@ const ProfileEditModal: FC<ProfileEditModalProps> = ({ user, showModal, setShowM
     const handleSaveProfile = async () => {
         console.log("Edit Profile", editData);
         try {
+            if(isGuest()) return;
             await firestoreService.updateDocument("users", uid, editData);
             setUserData(editData);
             setShowModal(false);
